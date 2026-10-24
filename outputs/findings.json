@@ -1,0 +1,95 @@
+{
+  "method": {
+    "similarity": "eklenti benzerliği (3-gram, 1024 boyut), eşik 0.80; birebir tekrar 0.97",
+    "comparable": "iki mesaj da sadeleştirildikten sonra en az 12 karakter",
+    "templates": "çıkarıldı (ilk 80 karakter örneklemde 20 kez ve üzeri)"
+  },
+  "1m": {
+    "n_conversations": 49547,
+    "templated_pct": 16.3,
+    "repeat": {
+      "n_conversations": 11812,
+      "n_comparable_pairs": 47158,
+      "conversations_with_similar_pct": 24.9,
+      "conversations_with_exact_pct": 9.3,
+      "similar_pairs_pct": 11.7,
+      "similar_by_length_pct": {
+        "3-4": 20.0,
+        "5-9": 27.0,
+        "10+": 38.4
+      }
+    },
+    "concentration_all": {
+      "n_users": 16604,
+      "top1pct_share": 28.1,
+      "top10pct_share": 54.2
+    },
+    "concentration_organic": {
+      "n_users": 14992,
+      "top1pct_share": 23.9,
+      "top10pct_share": 51.6
+    },
+    "turkey_night": {
+      "n_conversations": 542,
+      "n_users": 209,
+      "conversation_pct": 23.6,
+      "user_weighted_pct": 18.0,
+      "user_weighted_ci95_pct": [
+        12.9,
+        23.1
+      ],
+      "uniform_share_pct": 25.0,
+      "top3_users_share_of_night_pct": 50.0
+    }
+  },
+  "48m_sample": {
+    "n_conversations": 137366,
+    "templated_pct": 44.2,
+    "repeat": {
+      "n_conversations": 16894,
+      "n_comparable_pairs": 74321,
+      "conversations_with_similar_pct": 21.9,
+      "conversations_with_exact_pct": 8.1,
+      "similar_pairs_pct": 10.8,
+      "similar_by_length_pct": {
+        "3-4": 16.4,
+        "5-9": 23.5,
+        "10+": 36.8
+      }
+    },
+    "concentration_all": {
+      "n_users": 77504,
+      "top1pct_share": 29.4,
+      "top10pct_share": 47.9
+    },
+    "concentration_organic": {
+      "n_users": 35611,
+      "top1pct_share": 26.7,
+      "top10pct_share": 51.1
+    },
+    "turkey_night": {
+      "n_conversations": 902,
+      "n_users": 405,
+      "conversation_pct": 18.1,
+      "user_weighted_pct": 15.3,
+      "user_weighted_ci95_pct": [
+        12.4,
+        18.4
+      ],
+      "uniform_share_pct": 25.0,
+      "top3_users_share_of_night_pct": 28.8
+    }
+  },
+  "repair_per_message_48m": {
+    "by_turn_pct": {
+      "2": 3.85,
+      "3": 4.33,
+      "4-5": 4.63,
+      "6-10": 4.99,
+      "11-20": 6.28,
+      "21-40": 7.51
+    },
+    "ratio_21_40_vs_2": 1.95,
+    "source": "outputs/eda_48m_summary.json -> repair_by_turn"
+  }
+}
