@@ -4,6 +4,11 @@
 **Grup:** SIC AI 18 Capstone, Grup 1
 **Analiz kodu:** [`scripts/run_eda.py`](../scripts/run_eda.py) · **Sayısal özet:** [`outputs/eda_summary.json`](../outputs/eda_summary.json)
 
+> **Güncelleme notu.** Bu bölüm projenin ilk keşif analizidir ve olduğu gibi korunuyor. Üç bulgu sonradan daha sıkı bir yöntemle yeniden hesaplandı; güncel sayılar [`outputs/findings.json`](../outputs/findings.json) ve README'de:
+> (1) Tekrar oranı (%31,6) boş ve 12 karakterden kısa mesajları ve şablonları da sayıyordu; eklentinin benzerlik hesabıyla ve bu ayrımlarla oran %24,9. Ayrıca benzer mesajın tek başına memnuniyetsizlik göstermediği görüldü ([Bölüm 8](08_data_preparation_and_model.md), Bölüm 5.1).
+> (2) Gece kullanımı şablonlar çıkarılınca ve kullanıcı ağırlıklı bakılınca %18,0 (%95 güven aralığı %12,9 ile %23,1); saatler eşit dağılsaydı bu 6 saatin payı %25 olurdu, yani gece öne çıkmıyor.
+> (3) Uzun sohbetlerdeki memnuniyetsizlik artışı (yaklaşık 7 kat) sohbet başına hesaplanmıştı; mesaj başına artış yaklaşık 2 kat.
+
 ---
 
 ## 1. Giriş
