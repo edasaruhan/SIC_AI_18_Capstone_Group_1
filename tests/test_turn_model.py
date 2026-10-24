@@ -1,6 +1,7 @@
 """Tur modeli testleri: sızıntı yok, parite örnekleri tutarlı, model dosyası geçerli."""
 
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -43,7 +44,10 @@ def test_parity_fixture_is_current():
     for row in FIXTURE["conversations"]:
         k = len(row["messages"])
         features = turn_features(row["messages"], k)
-        assert features == row["features"]
+        # log1p gibi işlevler işletim sistemine göre son basamakta farklı çıkabiliyor (macOS ve Linux)
+        assert features.keys() == row["features"].keys()
+        for name, value in row["features"].items():
+            assert math.isclose(features[name], value, rel_tol=0, abs_tol=1e-12), name
         result = predict(features)
         assert abs(result["probability"] - row["probability"]) < 1e-12
         assert result["level"] == row["level"] and result["reasons"] == row["reasons"]
