@@ -10,11 +10,11 @@ Bu belge projede verdiğimiz teknik kararları ve nedenlerini kayıt altına al�
 | K04 | Veri kullanıcı bazlı bölünür | Kabul |
 | K05 | İlk model küçük ve açıklanabilirdir, tarayıcıda çalışır | Kabul |
 | K06 | Tüm eşikler tek bir ayar dosyasında tutulur | Kabul |
-| K07 | Tahmin ile tespit ayrılır; öneriler kesin sinyallerle tetiklenir | Kabul |
+| K07 | Tahmin ile tespit ayrılır; öneriler kesin sinyallerle tetiklenir | Değiştirildi (K17) |
 | K08 | Eğitim verisi WildChat 4.8M, hazır etiket kaynağı WildFeedback olur | Kabul |
 | K09 | Eklentinin ilk sürümü modelsiz, kural tabanlı çalışır; kesinti yalnızca benzer mesajda olur | Kabul |
 | K10 | Siteler ortak bir adaptör arayüzüyle desteklenir; sayfa yapısı tanınmazsa eklenti sessizce devre dışı kalır | Kabul |
-| K11 | Mesaj metni yalnızca bellekte tutulur; ağ erişimi tarayıcı düzeyinde kapatılır | Kabul |
+| K11 | Mesaj metni yalnızca bellekte tutulur; eklentide ağ isteği yapan kod yoktur | Kabul (düzeltildi) |
 | K12 | Ayarlar araç çubuğu penceresinde, yalnızca Türkçe; saklanan tek veri iki ayar ve günlük sayaçlar | Kabul |
 | K13 | Çıkış kartı eşikleri geçicidir, WildChat ile kalibre edilecek | Değiştirildi (K14) |
 | K14 | Eşikler WildChat ile kalibre edildi: şerit 0,8, yumuşak tekrar 0,6, çıkış kartı görev normuna göre | Kabul |
@@ -100,6 +100,8 @@ Bu belge projede verdiğimiz teknik kararları ve nedenlerini kayıt altına al�
 
 **Bedeli.** Model kullanıcıyı tek başına yönlendiremediği için bazı döngüler ancak başladıktan sonra yakalanır.
 
+**Değiştirildi (K17).** Tur modeli kalibre edildikten sonra model de kullanıcıya görünen bir öneriyi tetikleyebiliyor: çıkış kartı, görev normuna ek olarak modelin yüksek güven eşiğini geçtiği ve sohbette en az bir güçlü onarım ifadesi bulunduğu turda açılabiliyor. Tahmin ile tespit ayrımı korunuyor: şerit yalnızca gerçekleşmiş tekrarda çıkıyor, model kartı ise bir tahmin olduğunu ve gerekçesini söylüyor.
+
 ## K08. Eğitim verisi WildChat 4.8M, hazır etiket kaynağı WildFeedback olur
 
 **Bağlam.** Keşif analizini WildChat 1M ile yaptık. Bu sürüm 2023 ile 2024 arasını ve eski modelleri kapsıyor; Türkçe sohbet sayısı da az.
@@ -130,13 +132,15 @@ Bu belge projede verdiğimiz teknik kararları ve nedenlerini kayıt altına al�
 
 **Bedeli.** Sayfa yapısı değiştikçe adaptörlerin bakımı gerekir. Henüz desteklenmeyenler: Gemini Gems sayfaları, çok uzun sohbetlerde tembel yüklenen geçmişin eksik sayılması ihtimali, Türkçe ve İngilizce dışındaki arayüz dilleri.
 
-## K11. Mesaj metni yalnızca bellekte tutulur; ağ erişimi tarayıcı düzeyinde kapatılır
+## K11. Mesaj metni yalnızca bellekte tutulur; eklentide ağ isteği yapan kod yoktur
 
 **Bağlam.** Ürünün temel sözü mesajların cihazdan çıkmaması.
 
-**Karar.** Mesaj metni yalnızca sekmenin belleğinde, o sekme açık kaldığı sürece durur. Hiçbir ağ isteği yapılmaz; manifest içindeki içerik güvenlik politikası `connect-src 'none'` ile bunu tarayıcı düzeyinde de zorlar. Konsola metin yazılmaz, yalnızca uzunluk ve benzerlik skoru yazılır. "Taze başlat" taslağı yalnızca kullanıcının tıklamasıyla panoya yazılır.
+**Karar.** Mesaj metni yalnızca sekmenin belleğinde, o sekme açık kaldığı sürece durur. Hiçbir ağ isteği yapılmaz. Manifestteki içerik güvenlik politikası (`connect-src 'none'`) eklenti sayfalarında (araç çubuğu penceresi) ve arka plan çalışanında ağ isteğini tarayıcı düzeyinde engeller. İçerik betiği ise ChatGPT ya da Gemini sayfasının içinde, o sayfanın kurallarıyla çalışır; bu politika onu kapsamaz. İçerik betiği için güvence bir testten gelir: `extension/src/no-network.test.ts`, derlenmiş üç dosyada `fetch`, `XMLHttpRequest`, `WebSocket`, `sendBeacon`, `EventSource` ve `importScripts` adlarının hiç geçmediğini her test çalıştırmasında denetler. Konsola metin yazılmaz, yalnızca uzunluk ve benzerlik skoru yazılır. "Taze başlat" taslağı yalnızca kullanıcının tıklamasıyla panoya yazılır.
 
-**Neden.** Gizlilik sözünü kodun disiplinine değil, tarayıcının zorladığı bir kurala bağlamak, sözü denetlenebilir kılar.
+**Neden.** Gizlilik sözünü denetlenebilir kılmak: eklenti sayfalarında tarayıcının zorladığı bir kural, içerik betiğinde her derlemede çalışan bir test.
+
+**Düzeltme notu.** Bu kararın ilk metni, `connect-src 'none'` kuralının içerik betiğini de kapsadığını söylüyordu; bu yanlıştı. Metin düzeltildi ve içerik betiği için yukarıdaki test eklendi.
 
 **Bedeli.** Sekme kapanınca oturum bilgisi gider; eklenti geçmişi hatırlayamaz. Sohbet geçmişi sayfanın kendisinden okunur. Uzaktan hata raporu ya da kullanım analitiği yapılamaz.
 
