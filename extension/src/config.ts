@@ -44,6 +44,4 @@ export const EXIT_CARD_MIN_REPEATS = 1; // bu sohbette en az bu kadar benzer mes
 export const EXIT_CARD_COOLDOWN_TURNS = 5; // kapatılınca / yok sayılınca bu kadar tur boyunca tekrar çıkmaz
 export const FRESH_START_MAX_CHARS = 400; // taslakta her istek en fazla bu kadar karakter
 
-// Ayarlar ve sayaçlar
-/** Günlük sayaçlar bu kadar gün saklanır, eskisi silinir. */
-export const COUNT_RETENTION_DAYS = 90;
+// Sayaçların saklama süresi ve kovaları src/data/counter-schema.json içinde (karar K18).

@@ -1,0 +1,198 @@
+{
+  "note": "Sayaç şeması, sürüm 2 (karar K18). Hem eklenti (src/core/counters.ts) hem Python (src/kafiai/counters.py) bu dosyayla doğrular. Saklanan her şey sayıdır; mesaj metni, sohbet kimliği ya da adres hiçbir boyutta yoktur. Her hücrenin anahtarı: olay|boyut1|boyut2|...|ayrıntı (boyutlar olayın 'dims' listesindeki sırayla). Bilinmeyen boyut değeri 'na'.",
+  "schema": "kafiai.counts",
+  "version": 2,
+  "storage_key": "kafiai.counts.v2",
+  "v1_storage_key": "kafiai.counts",
+  "retention_days": 90,
+  "unknown": "na",
+  "phases": [
+    "sayim",
+    "oneri",
+    "karisik"
+  ],
+  "dimensions": {
+    "platform": [
+      "chatgpt",
+      "gemini",
+      "claude",
+      "copilot",
+      "google_ai_mode"
+    ],
+    "slot": [
+      "00-06",
+      "06-12",
+      "12-18",
+      "18-24"
+    ],
+    "task": [
+      "kod",
+      "ceviri",
+      "ozet",
+      "yazma",
+      "soru",
+      "diger"
+    ],
+    "len": [
+      "1-3",
+      "4-6",
+      "7-10",
+      "11+"
+    ],
+    "first_len": [
+      "kisa",
+      "orta",
+      "uzun"
+    ]
+  },
+  "buckets": {
+    "slot_start_hours": [
+      0,
+      6,
+      12,
+      18
+    ],
+    "len_upper": [
+      3,
+      6,
+      10
+    ],
+    "first_len_upper_chars": [
+      80,
+      400
+    ]
+  },
+  "events": {
+    "send": {
+      "dims": [
+        "platform",
+        "slot",
+        "task",
+        "len"
+      ],
+      "details": [
+        "kisa",
+        "farkli",
+        "benzer"
+      ],
+      "note": "Gönderilen mesaj. kisa: karşılaştırılamayacak kadar kısa; benzer: son mesajlardan birine şerit eşiği kadar benziyor."
+    },
+    "strip": {
+      "dims": [
+        "platform",
+        "task"
+      ],
+      "details": [
+        "tetiklendi",
+        "gosterildi",
+        "gizlendi_sayim",
+        "gizlendi_rastgele",
+        "gizlendi_bekleme",
+        "gizlendi_kapali",
+        "gizlendi_platform"
+      ],
+      "note": "Benzer mesaj şeridi. tetiklendi: koşul sağlandı; ardından gösterildi ya da gizlendi (nedeniyle) sayılır."
+    },
+    "strip_action": {
+      "dims": [
+        "platform"
+      ],
+      "details": [
+        "yine_de_gonder",
+        "duzenle",
+        "yerinde_degil"
+      ]
+    },
+    "repair_button": {
+      "dims": [
+        "platform",
+        "task"
+      ],
+      "details": [
+        "format",
+        "info",
+        "shorter",
+        "longer",
+        "na"
+      ],
+      "note": "Onarım düğmesi; ayrıntı düğmenin türü (src/core/repairs.ts). 'na': sürüm 1'den göç edilen, türü bilinmeyen sayılar."
+    },
+    "card": {
+      "dims": [
+        "platform",
+        "task",
+        "len"
+      ],
+      "details": [
+        "tetiklendi_norm",
+        "tetiklendi_model",
+        "gosterildi_norm",
+        "gosterildi_model",
+        "gizlendi_sayim",
+        "gizlendi_rastgele",
+        "gizlendi_bekleme",
+        "gizlendi_kapali",
+        "gizlendi_platform",
+        "gizlendi_yaziyor"
+      ],
+      "note": "Çıkış kartı. norm: görev normu (K14); model: tur modeli (K17)."
+    },
+    "card_action": {
+      "dims": [
+        "platform"
+      ],
+      "details": [
+        "taze_baslat",
+        "ara",
+        "kapat",
+        "bir_daha_gosterme",
+        "yerinde_degil"
+      ]
+    },
+    "fresh_followup": {
+      "dims": [
+        "platform"
+      ],
+      "details": [
+        "1-3",
+        "4-6",
+        "7-10",
+        "11+"
+      ],
+      "note": "Taze başlat ile açılan yeni sohbet bittiğinde kaç turda bittiği."
+    },
+    "regenerate": {
+      "dims": [
+        "platform",
+        "task",
+        "len"
+      ],
+      "details": [
+        "-"
+      ]
+    },
+    "edit": {
+      "dims": [
+        "platform",
+        "task",
+        "len"
+      ],
+      "details": [
+        "-"
+      ]
+    },
+    "conversation": {
+      "dims": [
+        "platform",
+        "task",
+        "len",
+        "first_len"
+      ],
+      "details": [
+        "dongu",
+        "normal"
+      ],
+      "note": "Sohbet bittiğinde (başka sohbete geçiş ya da sekme kapanışı) bir kez: tur kovası, ilk mesaj uzunluğu ve sonuç. Sonuç Python'daki etiketin eklentideki karşılığı (counters.loop_outcome)."
+    }
+  }
+}

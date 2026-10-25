@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from "vitest";
-import { dayKey, SettingsStore, type KeyValueStorage } from "../core/settings";
+import { CounterStore, dayOf, validateExport, type Dims, type EventName } from "../core/counters";
+import { SettingsStore, type KeyValueStorage } from "../core/settings";
 import { mountPopup } from "./popup";
 
 function memoryStorage(): KeyValueStorage & { data: Record<string, unknown> } {
@@ -18,6 +19,14 @@ const NOW = new Date(2026, 9, 21, 12);
 let root: HTMLElement;
 let storage: ReturnType<typeof memoryStorage>;
 let store: SettingsStore;
+let counters: CounterStore;
+
+/** Belirli bir günde bir olay say ve hemen depoya yaz. */
+async function record(event: EventName, detail: string, when: Date = NOW, dims: Dims = { platform: "chatgpt" }) {
+  const c = new CounterStore(storage, { flushDelayMs: 0, now: () => when });
+  c.record(event, dims, detail, "oneri");
+  await c.flush();
+}
 
 function checkbox(label: string): HTMLInputElement {
   const row = Array.from(root.querySelectorAll("label")).find((l) => l.textContent?.includes(label))!;
@@ -27,7 +36,7 @@ function button(text: string): HTMLButtonElement {
   return Array.from(root.querySelectorAll("button")).find((b) => b.textContent === text)!;
 }
 async function open() {
-  mountPopup(root, store, () => NOW);
+  mountPopup(root, store, counters, () => NOW);
   await flush();
 }
 
@@ -36,6 +45,7 @@ beforeEach(() => {
   root = document.getElementById("root")!;
   storage = memoryStorage();
   store = new SettingsStore(storage);
+  counters = new CounterStore(storage, { flushDelayMs: 0, now: () => NOW });
 });
 
 describe("popup", () => {
@@ -78,21 +88,25 @@ describe("popup", () => {
     expect(checkbox("Öneriler").disabled).toBe(true);
   });
 
-  it("sayaçları yalnızca sayı olarak panoya kopyalar", async () => {
-    await store.increment("stripShown", NOW);
-    await store.increment("checkedSendsOff", NOW);
+  it("sayaçları sürüm numaralı v2 biçiminde, yalnızca sayı olarak panoya kopyalar", async () => {
+    await record("strip", "gosterildi");
+    await record("send", "farkli");
     await store.update({ enabled: true });
     let copied = "";
-    mountPopup(root, store, () => NOW, async (t) => ((copied = t), true));
+    mountPopup(root, store, counters, () => NOW, async (t) => ((copied = t), true));
     await flush();
     button("Sayaçlarımı kopyala").click();
     await flush();
-    expect(JSON.parse(copied)).toEqual({ [dayKey(NOW)]: { stripShown: 1, checkedSendsOff: 1 } });
+    const exported = JSON.parse(copied);
+    expect(exported.schema).toBe("kafiai.counts");
+    expect(exported.version).toBe(2);
+    expect(validateExport(exported)).toEqual([]);
+    expect(exported.days[dayOf(NOW)].c).toEqual({ "strip|chatgpt|na|gosterildi": 1, "send|chatgpt|na|na|na|farkli": 1 });
     expect(root.textContent).toContain("Sayaçlar panoya kopyalandı.");
   });
 
   it("kopyalama başarısız olursa bunu söyler", async () => {
-    mountPopup(root, store, () => NOW, async () => false);
+    mountPopup(root, store, counters, () => NOW, async () => false);
     await flush();
     button("Sayaçlarımı kopyala").click();
     await flush();
@@ -105,16 +119,16 @@ describe("popup", () => {
   });
 
   it("son 7 günün sayılarını gösterir, sıfır olanları ve eski günleri göstermez", async () => {
-    await store.increment("stripShown", NOW);
-    await store.increment("stripShown", NOW);
-    await store.increment("freshStart", NOW);
+    await record("strip", "gosterildi");
+    await record("strip", "gosterildi");
+    await record("card_action", "taze_baslat");
     const old = new Date(NOW);
     old.setDate(old.getDate() - 10);
-    await store.increment("stripSendAnyway", old);
+    await record("strip_action", "yine_de_gonder", old);
     await open();
     const items = Array.from(root.querySelectorAll("li")).map((li) => li.textContent);
     expect(items).toEqual(["Benzer mesaj uyarısı gösterildi2", "Taze başlattığın1"]);
-    expect(dayKey(old)).not.toBe(dayKey(NOW));
+    expect(dayOf(old)).not.toBe(dayOf(NOW));
   });
 
   it("silme önce onay ister; Vazgeç hiçbir şeyi silmez", async () => {
@@ -132,7 +146,7 @@ describe("popup", () => {
 
   it("onaylanınca her şey silinir ve varsayılana döner", async () => {
     await store.update({ enabled: false });
-    await store.increment("stripShown", NOW);
+    await record("strip", "gosterildi");
     await open();
     button("Tüm verilerimi sil").click();
     await flush();
@@ -144,7 +158,7 @@ describe("popup", () => {
   });
 
   it("yargılayıcı ya da doğrulanmamış söz içermez", async () => {
-    await store.increment("stripShown", NOW);
+    await record("strip", "gosterildi");
     await open();
     const text = (root.textContent ?? "").toLowerCase();
     for (const bad of ["bağımlı", "risk", "tehlike", "seri", "rozet", "%"]) expect(text).not.toContain(bad);
