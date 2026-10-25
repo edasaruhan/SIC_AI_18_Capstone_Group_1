@@ -1,0 +1,7 @@
+# CI için hafif bağımlılık listesi: testler yalnızca bunlara ihtiyaç duyar.
+# Analiz ve eğitim scriptleri için requirements.txt kullanılır.
+numpy>=1.24
+pandas>=2.0
+scikit-learn>=1.3
+pyarrow>=14.0
+pytest>=8.0
