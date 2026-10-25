@@ -8,7 +8,8 @@
     "watch": "node build.mjs --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "parity-fixture": "esbuild scripts/make-parity-fixture.ts --bundle --platform=node --format=esm --outfile=dist/parity-fixture.mjs --log-level=warning && node dist/parity-fixture.mjs"
+    "parity-fixture": "esbuild scripts/make-parity-fixture.ts --bundle --platform=node --format=esm --outfile=dist/parity-fixture.mjs --log-level=warning && node dist/parity-fixture.mjs",
+    "check": "tsc --noEmit && vitest run && node build.mjs"
   },
   "devDependencies": {
     "@types/chrome": "^0.3.5",

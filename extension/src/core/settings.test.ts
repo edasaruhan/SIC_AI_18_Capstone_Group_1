@@ -1,14 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { COUNT_RETENTION_DAYS } from "../config";
-import {
-  DEFAULT_SETTINGS,
-  dayKey,
-  parseCounts,
-  parseSettings,
-  pruneCounts,
-  SettingsStore,
-  type KeyValueStorage,
-} from "./settings";
+import { CounterStore, COUNTS_V1_KEY, COUNTS_V2_KEY } from "./counters";
+import { DEFAULT_SETTINGS, parseSettings, PENDING_FRESH_KEY, SettingsStore, type KeyValueStorage } from "./settings";
 
 function memoryStorage(initial: Record<string, unknown> = {}): KeyValueStorage & { data: Record<string, unknown> } {
   const data = { ...initial };
@@ -36,32 +28,6 @@ describe("parseSettings", () => {
   });
 });
 
-describe("parseCounts", () => {
-  it("yalnızca bilinen sayaçları ve geçerli günleri tutar", () => {
-    const counts = parseCounts({
-      "2026-10-21": { stripShown: 2, bilinmeyen: 5, freshStart: -1, shortBreak: 1.5 },
-      "bozuk-gün": { stripShown: 1 },
-      "2026-10-22": { stripShown: 0 },
-    });
-    expect(counts).toEqual({ "2026-10-21": { stripShown: 2 } });
-  });
-});
-
-describe("pruneCounts", () => {
-  it("saklama süresinden eski günleri siler", () => {
-    const now = new Date(2026, 9, 21);
-    const old = new Date(now);
-    old.setDate(old.getDate() - COUNT_RETENTION_DAYS - 1);
-    const edge = new Date(now);
-    edge.setDate(edge.getDate() - COUNT_RETENTION_DAYS);
-    const out = pruneCounts(
-      { [dayKey(old)]: { stripShown: 1 }, [dayKey(edge)]: { stripShown: 2 }, [dayKey(now)]: { stripShown: 3 } },
-      now,
-    );
-    expect(Object.keys(out)).toEqual([dayKey(edge), dayKey(now)].sort());
-  });
-});
-
 describe("SettingsStore", () => {
   it("boş depoda varsayılan ayarı verir", async () => {
     expect(await new SettingsStore(memoryStorage()).load()).toEqual(DEFAULT_SETTINGS);
@@ -76,73 +42,16 @@ describe("SettingsStore", () => {
     expect(await store.load()).toEqual({ enabled: false, exitCardEnabled: false, suggestionsEnabled: true });
   });
 
-  it("aynı anda yapılan artırmalar birbirini ezmez", async () => {
-    const store = new SettingsStore(memoryStorage());
-    const now = new Date(2026, 9, 21);
-    await Promise.all([
-      store.increment("checkedSendsOff", now),
-      store.increment("similarSendsOff", now),
-      store.increment("stripWouldShow", now),
-      store.increment("checkedSendsOff", now),
-    ]);
-    expect((await store.loadCounts())["2026-10-21"]).toEqual({
-      checkedSendsOff: 2,
-      similarSendsOff: 1,
-      stripWouldShow: 1,
-    });
-  });
-
-  it("incrementMany birkaç sayacı tek seferde artırır", async () => {
-    const store = new SettingsStore(memoryStorage());
-    const now = new Date(2026, 9, 21);
-    await store.incrementMany(["checkedSendsOn", "similarSendsOn"], now);
-    await store.incrementMany([], now);
-    expect((await store.loadCounts())["2026-10-21"]).toEqual({ checkedSendsOn: 1, similarSendsOn: 1 });
-  });
-
-  it("increment aynı günün sayacını artırır, başka güne ayrı yazar", async () => {
-    const store = new SettingsStore(memoryStorage());
-    const d1 = new Date(2026, 9, 21, 10);
-    const d2 = new Date(2026, 9, 22, 10);
-    await store.increment("stripShown", d1);
-    await store.increment("stripShown", d1);
-    await store.increment("freshStart", d1);
-    await store.increment("stripShown", d2);
-    expect(await store.loadCounts()).toEqual({
-      "2026-10-21": { stripShown: 2, freshStart: 1 },
-      "2026-10-22": { stripShown: 1 },
-    });
-  });
-
-  it("saklanan veride yalnızca ayar anahtarları ve sayılar bulunur", async () => {
-    const storage = memoryStorage();
+  it("clearAll ayarları, sayaçları (v1 ve v2) ve taze başlat işaretini siler", async () => {
+    const storage = memoryStorage({ [COUNTS_V1_KEY]: { "2026-10-21": { stripShown: 1 } }, [PENDING_FRESH_KEY]: { platform: "chatgpt", until: 1 } });
     const store = new SettingsStore(storage);
     await store.update({ enabled: false });
-    await store.increment("stripShown", new Date(2026, 9, 21));
-    const dump = JSON.stringify(storage.data);
-    expect(Object.keys(storage.data).sort()).toEqual(["kafiai.counts", "kafiai.settings"]);
-    expect(dump).toBe('{"kafiai.settings":{"enabled":false,"exitCardEnabled":true,"suggestionsEnabled":true},"kafiai.counts":{"2026-10-21":{"stripShown":1}}}');
-  });
-
-  it("clearAll her şeyi siler ve varsayılana döner", async () => {
-    const storage = memoryStorage();
-    const store = new SettingsStore(storage);
-    await store.update({ enabled: false });
-    await store.increment("stripShown");
+    const counters = new CounterStore(storage, { flushDelayMs: 0 });
+    counters.record("strip", { platform: "chatgpt" }, "gosterildi", "oneri");
+    await counters.flush();
+    expect(Object.keys(storage.data)).toContain(COUNTS_V2_KEY);
     await store.clearAll();
     expect(storage.data).toEqual({});
     expect(await store.load()).toEqual(DEFAULT_SETTINGS);
-    expect(await store.loadCounts()).toEqual({});
-  });
-
-  it("depolama hata verirse increment sessizce geçer", async () => {
-    const broken: KeyValueStorage = {
-      get: async () => {
-        throw new Error("depo yok");
-      },
-      set: async () => {},
-      remove: async () => {},
-    };
-    await expect(new SettingsStore(broken).increment("stripShown")).resolves.toBeUndefined();
   });
 });

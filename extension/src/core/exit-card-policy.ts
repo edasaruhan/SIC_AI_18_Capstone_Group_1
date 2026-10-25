@@ -50,6 +50,22 @@ export class ExitCardPolicy {
     return this.highRiskTurn === turns && turns >= this.quietUntilTurn;
   }
 
+  /**
+   * Kartı açtıracak koşul bu turda sağlanıyor mu, bekleme süresine bakmadan? Hangi yoldan?
+   * Model yolu önce gelir, çünkü gerekçe gösterebilir. Sayaçlar "tetiklendi" ile "gösterildi"
+   * arasındaki farkı (bekleme, ayar, sayım modu) bu sayede ayırabiliyor.
+   */
+  triggerSource(turns: number): "norm" | "model" | null {
+    if (this.highRiskTurn === turns) return "model";
+    if (turns >= this.minTurns && this.repeats >= EXIT_CARD_MIN_REPEATS) return "norm";
+    return null;
+  }
+
+  /** Kart kısa süre önce kapatıldı ya da yok sayıldı; bekleme süresi dolmadı. */
+  inCooldown(turns: number): boolean {
+    return turns < this.quietUntilTurn;
+  }
+
   shouldShow(turns: number): boolean {
     if (turns < this.quietUntilTurn) return false;
     const byNorm = turns >= this.minTurns && this.repeats >= EXIT_CARD_MIN_REPEATS;

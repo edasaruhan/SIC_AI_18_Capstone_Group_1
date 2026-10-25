@@ -104,3 +104,18 @@ describe("ExitCardPolicy tur modeli", () => {
     expect(p.shouldShow(3)).toBe(false);
   });
 });
+
+describe("ExitCardPolicy tetiklenme kaynağı", () => {
+  it("model yolu norm yolundan önce gelir; bekleme süresi kaynağı değiştirmez", () => {
+    const p = new ExitCardPolicy();
+    expect(p.triggerSource(3)).toBeNull();
+    p.noteRepeat();
+    expect(p.triggerSource(p.minTurns)).toBe("norm");
+    p.noteRisk("yuksek", p.minTurns);
+    expect(p.triggerSource(p.minTurns)).toBe("model");
+    p.dismissed(p.minTurns);
+    expect(p.inCooldown(p.minTurns + 1)).toBe(true);
+    expect(p.triggerSource(p.minTurns + 1)).toBe("norm");
+    expect(p.shouldShow(p.minTurns + 1)).toBe(false);
+  });
+});

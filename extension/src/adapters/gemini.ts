@@ -105,6 +105,7 @@ function anchorOf(box: HTMLElement): Element {
 
 export const geminiAdapter: Adapter = {
   name: "gemini",
+  platform: "gemini",
 
   matches(url) {
     return HOSTS.has(url.hostname);

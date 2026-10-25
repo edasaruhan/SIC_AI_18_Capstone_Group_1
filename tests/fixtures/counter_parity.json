@@ -1,0 +1,274 @@
+{
+  "len_buckets": [
+    {
+      "turns": 0,
+      "bucket": "na"
+    },
+    {
+      "turns": 1,
+      "bucket": "1-3"
+    },
+    {
+      "turns": 3,
+      "bucket": "1-3"
+    },
+    {
+      "turns": 4,
+      "bucket": "4-6"
+    },
+    {
+      "turns": 6,
+      "bucket": "4-6"
+    },
+    {
+      "turns": 7,
+      "bucket": "7-10"
+    },
+    {
+      "turns": 10,
+      "bucket": "7-10"
+    },
+    {
+      "turns": 11,
+      "bucket": "11+"
+    },
+    {
+      "turns": 50,
+      "bucket": "11+"
+    }
+  ],
+  "first_len_buckets": [
+    {
+      "chars": 0,
+      "bucket": "kisa"
+    },
+    {
+      "chars": 80,
+      "bucket": "kisa"
+    },
+    {
+      "chars": 81,
+      "bucket": "orta"
+    },
+    {
+      "chars": 400,
+      "bucket": "orta"
+    },
+    {
+      "chars": 401,
+      "bucket": "uzun"
+    },
+    {
+      "chars": 2000,
+      "bucket": "uzun"
+    }
+  ],
+  "first_len_unicode": {
+    "text": "ğüşıöç😀ğüşıöç😀ğüşıöç😀ğüşıöç😀ğüşıöç😀ğüşıöç😀ğüşıöç😀ğüşıöç😀ğüşıöç😀ğüşıöç😀ğüşıöç😀ğüşıöç😀",
+    "bucket": "orta"
+  },
+  "slots": [
+    {
+      "hour": 0,
+      "slot": "00-06"
+    },
+    {
+      "hour": 5,
+      "slot": "00-06"
+    },
+    {
+      "hour": 6,
+      "slot": "06-12"
+    },
+    {
+      "hour": 11,
+      "slot": "06-12"
+    },
+    {
+      "hour": 12,
+      "slot": "12-18"
+    },
+    {
+      "hour": 17,
+      "slot": "12-18"
+    },
+    {
+      "hour": 18,
+      "slot": "18-24"
+    },
+    {
+      "hour": 23,
+      "slot": "18-24"
+    }
+  ],
+  "loop_outcomes": [
+    {
+      "messages": [
+        "Bir şiir yaz",
+        "Güzel, teşekkürler"
+      ],
+      "outcome": "normal"
+    },
+    {
+      "messages": [
+        "fix my code",
+        "here it is",
+        "it still gives an error",
+        "same error again"
+      ],
+      "outcome": "dongu"
+    },
+    {
+      "messages": [
+        "Kodu düzelt",
+        "hata var",
+        "olmadı",
+        "olmadı"
+      ],
+      "outcome": "dongu"
+    },
+    {
+      "messages": [
+        "Write an essay",
+        "make it shorter",
+        "still too long",
+        "Write an essay"
+      ],
+      "outcome": "normal"
+    },
+    {
+      "messages": [
+        "list satellites AA",
+        "list satellites AB",
+        "list satellites AC",
+        "list satellites AD"
+      ],
+      "outcome": "normal"
+    },
+    {
+      "messages": [
+        "özet çıkar",
+        "daha kısa",
+        "daha kısa",
+        "daha kısa"
+      ],
+      "outcome": "normal"
+    },
+    {
+      "messages": [
+        "soru 1",
+        "soru 2",
+        "hayır öyle değil",
+        "Ben ne dedim?",
+        "yeniden yaz",
+        "yeniden yaz"
+      ],
+      "outcome": "dongu"
+    },
+    {
+      "messages": [
+        "I asked for a list",
+        "I said a list!!",
+        "no",
+        "no"
+      ],
+      "outcome": "dongu"
+    }
+  ],
+  "valid_export": {
+    "schema": "kafiai.counts",
+    "version": 2,
+    "exported": "2026-10-24",
+    "days": {
+      "2026-10-23": {
+        "phase": "sayim",
+        "c": {
+          "send|chatgpt|18-24|kod|4-6|benzer": 3,
+          "strip|chatgpt|kod|gizlendi_sayim": 2,
+          "conversation|gemini|soru|1-3|kisa|normal": 1
+        }
+      },
+      "2026-10-24": {
+        "phase": "oneri",
+        "c": {
+          "card|na|na|na|gosterildi_model": 1,
+          "repair_button|chatgpt|kod|info": 1,
+          "fresh_followup|chatgpt|1-3": 1,
+          "regenerate|claude|yazma|7-10|-": 2
+        }
+      }
+    }
+  },
+  "invalid_exports": [
+    {
+      "schema": "kafiai.counts",
+      "version": 2,
+      "days": {
+        "2026-10-24": {
+          "phase": "oneri",
+          "c": {
+            "send|chatgpt|18-24|kod|4-6|merhaba dünya": 1
+          }
+        }
+      }
+    },
+    {
+      "schema": "kafiai.counts",
+      "version": 2,
+      "days": {
+        "2026-10-24": {
+          "phase": "oneri",
+          "c": {
+            "send|chatgpt|18-24|kod|benzer": 1
+          }
+        }
+      }
+    },
+    {
+      "schema": "kafiai.counts",
+      "version": 2,
+      "days": {
+        "2026-10-24": {
+          "phase": "oneri",
+          "c": {
+            "send|https://chatgpt.com/c/abc|18-24|kod|4-6|benzer": 1
+          }
+        }
+      }
+    },
+    {
+      "schema": "kafiai.counts",
+      "version": 2,
+      "days": {
+        "2026-10-24": {
+          "phase": "oneri",
+          "c": {
+            "strip|chatgpt|kod|gosterildi": 0
+          }
+        }
+      }
+    },
+    {
+      "schema": "kafiai.counts",
+      "version": 2,
+      "days": {
+        "2026-10-24": {
+          "phase": "oneri",
+          "c": {},
+          "text": "gizli"
+        }
+      }
+    },
+    {
+      "schema": "kafiai.counts",
+      "version": 1,
+      "days": {}
+    },
+    {
+      "schema": "kafiai.counts",
+      "version": 2,
+      "conversation": "abc123",
+      "days": {}
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { REPAIRS } from "../core/repairs";
+import { REPAIRS, type Repair } from "../core/repairs";
 
 /**
  * Gönderirken şerit: benzer bir mesaj gönderilmek üzereyken mesaj kutusunun üstünde görünen
@@ -13,7 +13,7 @@ export interface StripActions {
   /** Kullanıcı şeridi kapatıp mesajını düzenlemeye döndü (Kapat, Escape). */
   onClose(): void;
   /** Kullanıcı bir onarım seçti; mesaj kutusuna eklenecek cümle. */
-  onRepair(sentence: string): void;
+  onRepair(sentence: string, id: Repair["id"]): void;
   /** "Yerinde değildi": uyarı gereksizdi. Verilirse düğme gösterilir. */
   onNotRelevant?(): void;
 }
@@ -114,7 +114,7 @@ export class Strip {
         row.append(
           button(repair.label, "secondary", () => {
             this.hide();
-            actions.onRepair(repair.sentence);
+            actions.onRepair(repair.sentence, repair.id);
           }),
         );
       }

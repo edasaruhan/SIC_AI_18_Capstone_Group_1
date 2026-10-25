@@ -64,7 +64,7 @@ describe("Strip", () => {
     strip.show(document.body, a);
     buttonByText("Neyin eksik olduğunu söyle").click();
     buttonByText("Fazla uzun").click();
-    expect(a.onRepair).toHaveBeenCalledWith(REPAIRS.find((r) => r.id === "shorter")!.sentence);
+    expect(a.onRepair).toHaveBeenCalledWith(REPAIRS.find((r) => r.id === "shorter")!.sentence, "shorter");
     expect(strip.visible).toBe(false);
   });
 

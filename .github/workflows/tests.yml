@@ -1,0 +1,43 @@
+name: Testler
+
+# Her push ve pull request'te Python testleri ile eklentinin tip kontrolü, derlemesi ve testleri çalışır.
+# Ham veri gerektiren Python testleri, veri yoksa açık bir mesajla atlanır (tests/conftest.py).
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Python testleri
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - run: pip install -r requirements-ci.txt
+      - run: python -m pytest tests -q -rs
+
+  eklenti:
+    name: Eklenti (tip kontrolü, derleme, testler)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: extension
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: extension/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm test

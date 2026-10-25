@@ -12,15 +12,17 @@ Bu belge projede verdiğimiz teknik kararları ve nedenlerini kayıt altına al�
 | K06 | Tüm eşikler tek bir ayar dosyasında tutulur | Kabul |
 | K07 | Tahmin ile tespit ayrılır; öneriler kesin sinyallerle tetiklenir | Değiştirildi (K17) |
 | K08 | Eğitim verisi WildChat 4.8M, hazır etiket kaynağı WildFeedback olur | Kabul |
-| K09 | Eklentinin ilk sürümü modelsiz, kural tabanlı çalışır; kesinti yalnızca benzer mesajda olur | Kabul |
+| K09 | Eklentinin ilk sürümü modelsiz, kural tabanlı çalışır; kesinti yalnızca benzer mesajda olur | Değiştirildi (K17) |
 | K10 | Siteler ortak bir adaptör arayüzüyle desteklenir; sayfa yapısı tanınmazsa eklenti sessizce devre dışı kalır | Kabul |
 | K11 | Mesaj metni yalnızca bellekte tutulur; eklentide ağ isteği yapan kod yoktur | Kabul (düzeltildi) |
-| K12 | Ayarlar araç çubuğu penceresinde, yalnızca Türkçe; saklanan tek veri iki ayar ve günlük sayaçlar | Kabul |
+| K12 | Ayarlar araç çubuğu penceresinde, yalnızca Türkçe; saklanan tek veri iki ayar ve günlük sayaçlar | Değiştirildi (K18) |
 | K13 | Çıkış kartı eşikleri geçicidir, WildChat ile kalibre edilecek | Değiştirildi (K14) |
 | K14 | Eşikler WildChat ile kalibre edildi: şerit 0,8, yumuşak tekrar 0,6, çıkış kartı görev normuna göre | Kabul |
 | K15 | Etiketin ikinci sürümü: benzerlik değil güçlü onarım ifadeleri esas alınır | Kabul |
 | K16 | Model WildChat 4.8M ile eğitilir; eklenti için 25 öznitelikli Logistic Regression seçilir | Değiştirildi (K17) |
 | K17 | Eklentide her mesajda çalışan, kalibre edilmiş tur modeli; kart yalnızca yüksek güven ve kanıt şartıyla | Kabul |
+| K18 | Sayaç şeması v2: günlük, seyrek, boyutlu ve yalnızca sayı; ortak JSON şemasıyla doğrulanır | Kabul |
+| K19 | Platform kaydı: desteklenen siteler ve yetenekleri tek yapılandırma dosyasında | Kabul |
 
 ---
 
@@ -122,6 +124,8 @@ Bu belge projede verdiğimiz teknik kararları ve nedenlerini kayıt altına al�
 
 **Bedeli.** Anlamca aynı ama kelimece farklı mesajlar yakalanmaz (K03). Çıkış kartı yalnızca tur sayısı ve tekrar sayısına bakar, görev türünü bilmez.
 
+**Değiştirildi (K17).** Eklenti artık bir tur modeliyle de çalışıyor; model yüksek güvenle döngü tahmin ettiğinde ve sohbette en az bir onarım ifadesi bulunduğunda çıkış kartını açabiliyor. Mesajın bekletilmesi (kesinti) hâlâ yalnızca benzer mesajda oluyor.
+
 ## K10. Siteler ortak bir adaptör arayüzüyle desteklenir; sayfa yapısı tanınmazsa eklenti sessizce devre dışı kalır
 
 **Bağlam.** ChatGPT ve Gemini'nin sayfa yapıları farklı ve haber verilmeden değişebilir. Gemini'de `form` yoktur; mesaj kutusu `ql-editor`, gönderme çoğunlukla Enter iledir.
@@ -153,6 +157,8 @@ Bu belge projede verdiğimiz teknik kararları ve nedenlerini kayıt altına al�
 **Neden.** Kullanıcı eklenti üzerinde tam denetime sahip olur. Sayaçlar, eşiklerin gerçek kullanımda nasıl davrandığını görmemizi sağlar; "Yerinde değildi" sayısı yanlış alarm oranının en doğrudan ölçüsüdür.
 
 **Bedeli.** Türkçe bilmeyen kullanıcılar için arayüz yetersiz. Sayaçlar yalnızca o tarayıcı profilinde durur, cihazlar arası birleştirilmez.
+
+**Değiştirildi (K18).** Sayaçlar artık ayarlardan ayrı, şemalı ve boyutlu tutuluyor (`kafiai.counts.v2`). Saklanan veri yine yalnızca ayarlar ve sayılar; buna "Taze başlat" sonrası yeni sohbeti tanımak için on dakikalık bir işaret (yalnızca platform kimliği ve son geçerlilik zamanı) eklendi.
 
 ## K13. Çıkış kartı eşikleri geçicidir, WildChat ile kalibre edilecek
 
@@ -231,4 +237,33 @@ Yeni kurallarla kart çok turlu sohbetlerin %6,9'unda, ortanca 9. turda açılı
 **Neden.** Aynı test kullanıcılarında 2. turda PR-AUC 0,199'dan 0,213'e çıktı, 6. turda 0,364'e (rastgelenin 4,7 katı) ulaştı. Kalibrasyon hatası (ECE) 0,337'den 0,013'e indi. Kanıt şartı kartın isabetini %33'ten %38'e çıkardı, yakalanan döngü oranını yalnızca 1,6 puan düşürdü.
 
 **Bedeli.** Kart açıldığında yaklaşık 8 seferden 5'inde sohbet döngüye girmiyor; bu yüzden kart engellemiyor, kapatılabiliyor ve bekleme süresine uyuyor. Model asistanın cevaplarını görmüyor. Türkçe onarım ifadeleri henüz elle doğrulanmadı.
+
+## K18. Sayaç şeması v2: günlük, seyrek, boyutlu ve yalnızca sayı; ortak JSON şemasıyla doğrulanır
+
+**Bağlam.** İlk sayaçlar (K12) günde 19 sabit sayıdan oluşuyordu. Haftalık içgörü (P3), çok platformlu pilot (P7) ve mikro randomize deney için şunları ayırabilmek gerekiyor: hangi platformda, günün hangi diliminde, hangi işte, sohbetin kaçıncı turunda; bir önerinin tetiklendiği ama gösterilmediği durumlar ve nedeni; sohbetlerin sonucu. Bunu yaparken gizlilik sözü (K11) değişmemeli.
+
+**Karar.**
+- Sayaçlar `chrome.storage.local` içinde `kafiai.counts.v2` anahtarında, günlük ve 90 gün saklanır. Her gün bir faz (sayım, öneri ya da karışık) ve yalnızca sıfır olmayan hücrelerden oluşur.
+- Hücre anahtarı `olay|boyut1|...|ayrıntı`. Boyutlar: platform, saat dilimi (00–06, 06–12, 12–18, 18–24), görev türü, tur kovası (1–3, 4–6, 7–10, 11+), ilk mesaj uzunluğu kovası (80 ve 400 karakter sınırları). Olaylar: gönderim, şerit, şerit eylemleri, onarım düğmesi (türüyle), çıkış kartı (norm ya da model kaynaklı; tetiklendi, gösterildi, gizlendi ve nedeni), kart eylemleri, "Taze başlat" sonrası yeni sohbetin tur kovası, yeniden üretme, düzenleme ve sohbet sonucu (döngü ya da normal).
+- Şema tek bir JSON dosyasında (`extension/src/data/counter-schema.json`). Eklenti (`src/core/counters.ts`) ve Python (`src/kafiai/counters.py`) aynı dosyayla doğrular; şemaya uymayan her hücre okunurken atılır.
+- Yazmalar birikir ve iki saniyede bir, sekme arka plana geçince ya da kapanırken tek seferde yazılır.
+- Sürüm 1 sayaçları ilk okumada bir kez v2'ye taşınır (boyutlar "na") ve eski anahtar silinir.
+- "Sayaçlarımı kopyala" çıktısı sürüm numaralıdır: `{"schema": "kafiai.counts", "version": 2, "exported": "YYYY-MM-DD", "days": {...}}`.
+- "Taze başlat"a basılınca yeni sohbeti tanımak için `kafiai.pending_fresh` anahtarına yalnızca platform kimliği ve on dakikalık son geçerlilik zamanı yazılır; yeni sohbet açılınca okunur ve hemen silinir.
+
+**Neden.** Boyutlar, P3'teki "döngüler ne zaman, hangi işte, hangi platformda" sorularını ve P7'deki iki fazlı karşılaştırmayı mümkün kılıyor. Gizlilik yapısal olarak korunuyor: boyut değerleri şemadaki kısa ve sabit sözcük listelerinden geliyor, başka bir değer kabul edilmiyor; mesaj metni, sohbet kimliği ya da adres anahtara girecek bir yol bulamıyor. Bunu bir test sınıyor: rastgele mesajlarla kullanım benzetiminden sonra depoda hiçbir mesaj kelimesi, adres ya da kimlik bulunmuyor ve tüm anahtarlar izinli listeden geliyor (`counters.test.ts`).
+
+**Boyut.** Günde 300 olayla 90 günlük yoğun kullanım benzetiminde depolanan veri 1,5 MB'ın altında kalıyor (test). `chrome.storage.local` sınırı 10 MB.
+
+**Bedeli.** Hücre sayısı boyutların çarpımıyla büyüyebilir; seyrek saklama ve 90 günlük süre bunu sınırlıyor. Sohbet sonucu yalnızca kullanıcının o ziyarette en az bir mesaj gönderdiği sohbetler için ve sohbetten ayrılırken bir kez sayılıyor; aynı sohbete başka bir gün dönülürse ikinci kez sayılabilir. Sürüm 1'den taşınan sayıların boyutları bilinmiyor.
+
+## K19. Platform kaydı: desteklenen siteler ve yetenekleri tek yapılandırma dosyasında
+
+**Bağlam.** Sırada Claude, Copilot ve Google AI Modu var (P5). Her platform aynı yeteneklere sahip değil (yeniden üretme ve düzenlemeyi yakalayabilmek gibi) ve P4'ün sonucuna göre bir platformda modelin kapatılması ya da yalnızca sayım yapılması gerekebilir.
+
+**Karar.** Desteklenen siteler `extension/src/data/platforms.json` dosyasında tek listede durur: her platformun içerik betiğinin çalıştığı adresler ve yetenekleri (`regenerate`, `edit`, `model: on | off`, `interventions: full | count_only`). Adaptör arayüzü platform kimliği ve isteğe bağlı `onRegenerate`, `onEdit` olaylarıyla genişledi. İçerik betiği adaptörü bu kayıttan seçer; model kapalıysa tahmin yapılmaz, `count_only` ise şerit ve kart gösterilmez, yalnızca "gizlendi_platform" olarak sayılır. Manifestteki içerik betiği adresleri ve site izinleri kayıtla birebir aynı olmak zorunda; `registry.test.ts` bunu denetler.
+
+**Neden.** Yeni bir platformu eklemek ya da bir platformda modeli kapatmak kod değil yapılandırma değişikliği olur ve tek yerden izlenir. Manifest ile kaydın ayrışması (yeni bir sitede betiğin çalışıp adaptörün bulunamaması ya da tersi) test aşamasında yakalanır.
+
+**Bedeli.** Platform başına yalnızca açma, kapama ve sayım ayarı var; tüm platformlar aynı modeli kullanıyor; platforma özel model yok.
 

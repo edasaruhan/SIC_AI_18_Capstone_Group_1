@@ -1,0 +1,15 @@
+{
+  "note": "Platform kaydı (karar K19). Her desteklenen site için içerik betiğinin çalıştığı adresler ve yetenekler. Manifestteki content_scripts.matches ve host_permissions bu listeyle aynı olmak zorunda (src/adapters/registry.test.ts). model: tur modeli bu platformda çalışsın mı; interventions: full ise şerit ve kart gösterilir, count_only ise yalnızca sayılır. regenerate ve edit: adaptör yeniden üretme ve düzenleme eylemlerini yakalayabiliyor mu (P6).",
+  "platforms": {
+    "chatgpt": {
+      "label": "ChatGPT",
+      "matches": ["https://chatgpt.com/*", "https://chat.openai.com/*"],
+      "capabilities": { "regenerate": false, "edit": false, "model": "on", "interventions": "full" }
+    },
+    "gemini": {
+      "label": "Gemini",
+      "matches": ["https://gemini.google.com/*"],
+      "capabilities": { "regenerate": false, "edit": false, "model": "on", "interventions": "full" }
+    }
+  }
+}

@@ -1,12 +1,12 @@
-import { SettingsStore, type CounterName } from "../core/settings";
-import { recentTotals } from "../core/summary";
+import { CounterStore, recentTotalsV2, type WeekTotals } from "../core/counters";
+import { SettingsStore } from "../core/settings";
 import { copyToClipboard } from "../ui/clipboard";
 
-const ROWS: [CounterName, string][] = [
+const ROWS: [keyof WeekTotals, string][] = [
   ["stripShown", "Benzer mesaj uyarısı gösterildi"],
   ["stripSendAnyway", "“Yine de gönder” dediğin"],
-  ["stripRepair", "Eksik cümlesi eklediğin"],
-  ["exitCardShown", "Çıkış kartı gösterildi"],
+  ["repairs", "Eksik cümlesi eklediğin"],
+  ["cardShown", "Çıkış kartı gösterildi"],
   ["modelCardShown", "Bunlardan modelin önerdiği"],
   ["freshStart", "Taze başlattığın"],
 ];
@@ -39,6 +39,7 @@ function toggle(label: string, hint: string, checked: boolean, disabled: boolean
 export function mountPopup(
   root: HTMLElement,
   store: SettingsStore,
+  counters: CounterStore,
   now: () => Date = () => new Date(),
   copy: (text: string) => Promise<boolean> = copyToClipboard,
 ): void {
@@ -46,8 +47,8 @@ export function mountPopup(
   let notice = "";
 
   const render = async () => {
-    const [settings, counts] = await Promise.all([store.load(), store.loadCounts()]);
-    const totals = recentTotals(counts, now());
+    const [settings, counts] = await Promise.all([store.load(), counters.load()]);
+    const totals = recentTotalsV2(counts, now());
 
     const title = el("h1", undefined, "KafiAI");
 
@@ -112,8 +113,8 @@ export function mountPopup(
     } else {
       const exportButton = el("button", undefined, "Sayaçlarımı kopyala");
       exportButton.addEventListener("click", async () => {
-        // Yalnızca günlük sayılar kopyalanır (mesaj metni ya da sohbet bilgisi yok).
-        const ok = await copy(JSON.stringify(await store.loadCounts(), null, 2));
+        // Yalnızca günlük sayılar kopyalanır (sürüm numaralı; mesaj metni ya da sohbet bilgisi yok).
+        const ok = await copy(await counters.exportJson());
         notice = ok ? "Sayaçlar panoya kopyalandı." : "Kopyalanamadı.";
         await render();
       });

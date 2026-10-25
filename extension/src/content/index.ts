@@ -1,34 +1,44 @@
-import { chatgptAdapter } from "../adapters/chatgpt";
-import { geminiAdapter } from "../adapters/gemini";
-import type { Adapter } from "../adapters/types";
+import { platformFor } from "../adapters/registry";
 import { NAV_POLL_MS, POLL_MS } from "../config";
 import { chromeStorage } from "../core/chrome-storage";
+import {
+  CounterStore,
+  firstLenBucket,
+  lenBucket,
+  loopOutcome,
+  slotOf,
+  type Dims,
+  type EventName,
+  type Phase,
+} from "../core/counters";
 import { ExitCardPolicy } from "../core/exit-card-policy";
 import { buildFreshStartDraft } from "../core/fresh-start";
 import { HistoryWatcher } from "../core/history-watcher";
 import { RepeatDetector } from "../core/repeat-detector";
-import { sendCounters } from "../core/send-stats";
 import { Session } from "../core/session";
-import { taskType } from "../core/tasks";
-import { turnFeatures } from "../core/turn-features";
-import { MODEL_MIN_TURN, predict, type Prediction } from "../core/turn-model";
 import {
   DEFAULT_SETTINGS,
   parseSettings,
+  PENDING_FRESH_KEY,
   SETTINGS_KEY,
   SettingsStore,
   type Settings,
 } from "../core/settings";
+import { taskType } from "../core/tasks";
+import { turnFeatures } from "../core/turn-features";
+import { MODEL_MIN_TURN, predict, type Prediction } from "../core/turn-model";
 import { copyToClipboard } from "../ui/clipboard";
 import { ExitCard } from "../ui/exit-card";
 import { Strip } from "../ui/strip";
 
-const ADAPTERS: Adapter[] = [chatgptAdapter, geminiAdapter];
+/** "Taze başlat" ile açılan yeni sohbetin tanınması için geçerlilik süresi. */
+const FRESH_START_WINDOW_MS = 10 * 60 * 1000;
 
 function main(): void {
   const url = new URL(location.href);
-  const adapter = ADAPTERS.find((a) => a.matches(url));
-  if (!adapter) return; // tanımadığımız sitede sessizce devre dışı
+  const entry = platformFor(url);
+  if (!entry) return; // tanımadığımız sitede sessizce devre dışı (K10)
+  const { adapter, capabilities, platform } = entry;
 
   const session = new Session(adapter.conversationKey(url));
   const detector = new RepeatDetector(); // yalnızca bellekte; sohbet değişince silinir
@@ -36,77 +46,136 @@ function main(): void {
   const exitCard = new ExitCard();
   const policy = new ExitCardPolicy();
   const store = new SettingsStore(chromeStorage);
-  // Bu sohbetteki kullanıcı mesajları: yalnızca bellekte, tur modelinin öznitelikleri için.
-  // Sohbet değişince ya da sayfa kapanınca silinir; hiçbir yere yazılmaz.
+  const counters = new CounterStore(chromeStorage);
+  // Bu sohbetteki kullanıcı mesajları: yalnızca bellekte, tur modelinin öznitelikleri ve sohbet
+  // sonucu için. Sohbet değişince ya da sayfa kapanınca silinir; hiçbir yere yazılmaz.
   let userTexts: string[] = [];
   let lastPrediction: Prediction | null = null;
+  /** Bu ziyarette kullanıcı en az bir mesaj gönderdi mi? (Yalnızca bakılan eski sohbetler sayılmaz.) */
+  let sentThisVisit = false;
+  /** Bu sohbet "Taze başlat" ile mi açıldı? */
+  let freshFollowup = false;
 
   // Ayarlar yüklenene kadar (null) eklenti hiçbir şey yapmaz.
   let settings: Settings | null = null;
   const active = () => settings?.enabled === true;
   /** Öneri gösterme açık mı? Kapalıyken ("yalnızca say") hiçbir şey bekletilmez ya da gösterilmez. */
   const suggesting = () => active() && settings?.suggestionsEnabled === true;
-  const count = (name: Parameters<SettingsStore["increment"]>[0]) => {
-    void store.increment(name); // yalnızca sayı; hata verirse sessizce geçer
-  };
+  /** Bu platformda öneri gösterilebilir mi (platform kaydı, K19)? */
+  const intervening = () => capabilities.interventions === "full";
+  const phase = (): Phase => (suggesting() ? "oneri" : "sayim");
 
-  /** Cevap bitti: uzayan bir döngü varsa, kullanıcı yazmaya başlamadan çıkış kartını göster. */
-  const maybeShowExitCard = () => {
-    if (!settings?.exitCardEnabled) return;
-    if (strip.visible || exitCard.visible || !policy.shouldShow(session.turns)) return;
-    const composer = adapter.composer();
-    if (!composer || !composer.empty) return; // kullanıcı zaten yazmaya başladı
-    // Kart modelin yüksek risk tahmininden geliyorsa gerekçesi ve önerisi gösterilir.
-    const reason = policy.modelTriggered(session.turns) ? (lastPrediction?.reasons[0] ?? null) : null;
-    if (!suggesting()) {
-      // Yalnızca say: kart gösterilecekti. Aynı bekleme kuralı işlesin diye kapatılmış gibi say.
-      console.log(`[KafiAI] çıkış kartı gösterilecekti, sayıldı (tur ${session.turns}${reason ? ", model" : ""})`);
-      count("exitCardWouldShow");
-      if (reason) count("modelCardWouldShow");
-      policy.dismissed(session.turns);
-      return;
+  /** Sayaç boyutları: yalnızca kısa, sabit sözcükler (K18). Mesaj metni buraya girmez. */
+  const dims = (extra: Dims = {}): Dims => ({
+    platform,
+    slot: slotOf(new Date()),
+    task: userTexts[0] !== undefined ? taskType(userTexts[0]) : undefined,
+    len: lenBucket(session.turns),
+    ...extra,
+  });
+  const record = (event: EventName, detail: string, extra: Dims = {}) => counters.record(event, dims(extra), detail, phase());
+
+  /** Sohbet bitti (başka sohbete geçildi ya da sekme kapandı): sonucu bir kez say. */
+  const endConversation = () => {
+    if (sentThisVisit && userTexts.length > 0) {
+      const first = userTexts[0] ?? "";
+      // Tur sayısı mesaj listesinden alınır: adres değişince oturum sayacı çoktan sıfırlanmış olur.
+      record("conversation", loopOutcome(userTexts), { len: lenBucket(userTexts.length), first_len: firstLenBucket(first) });
+      if (freshFollowup) record("fresh_followup", lenBucket(userTexts.length));
     }
-    console.log(`[KafiAI] çıkış kartı gösterildi (tur ${session.turns}${reason ? `, model: ${reason.key}` : ""})`);
-    count("exitCardShown");
-    if (reason) count("modelCardShown");
-    exitCard.show(composer.anchor, session.turns, policy.norm, {
-      getDraft: () => buildFreshStartDraft(adapter.readHistory()),
-      onFreshStart: async (draft) => {
-        const copied = await copyToClipboard(draft);
-        if (copied) {
-          window.open(adapter.newChatUrl(), "_blank", "noopener");
-          count("freshStart");
-        }
-        console.log(`[KafiAI] taze başlat: ${copied ? "panoya kopyalandı, yeni sohbet açıldı" : "kopyalanamadı"}`);
-        return copied;
-      },
-      onNever: () => {
-        console.log("[KafiAI] kullanıcı 'Bir daha gösterme' dedi");
-        count("exitCardNever");
-        void store.update({ exitCardEnabled: false });
-      },
-      onDismiss: (kind) => {
-        policy.dismissed(session.turns);
-        count(kind === "ara" ? "shortBreak" : kind === "kapat" ? "exitCardClosed" : "freshStart");
-        console.log(`[KafiAI] çıkış kartı kapandı (${kind})`);
-      },
-      onNotRelevant: () => {
-        console.log("[KafiAI] kullanıcı model önerisi için 'Yerinde değildi' dedi");
-        count("modelNotRelevant");
-      },
-    }, reason);
+    sentThisVisit = false;
+    freshFollowup = false;
   };
 
-  /** Tur modeli: kullanıcının o ana kadarki mesajlarından döngü riski. Metin günlüğe yazılmaz. */
+  /** Cevap bitti: kart koşulu sağlanıyorsa, kullanıcı yazmaya başlamadan çıkış kartını göster. */
+  const maybeShowExitCard = () => {
+    if (strip.visible || exitCard.visible) return;
+    const source = policy.triggerSource(session.turns);
+    if (source === null) return;
+    record("card", `tetiklendi_${source}`);
+    // Kart modelin yüksek güvenli tahmininden geliyorsa gerekçesi ve önerisi gösterilir.
+    const reason = source === "model" ? (lastPrediction?.reasons[0] ?? null) : null;
+    const hide = (why: string) => {
+      record("card", `gizlendi_${why}`);
+      console.log(`[KafiAI] çıkış kartı gösterilmedi (${why}, tur ${session.turns})`);
+    };
+    if (policy.inCooldown(session.turns)) return hide("bekleme");
+    if (!settings?.exitCardEnabled) return hide("kapali");
+    if (!intervening()) return hide("platform");
+    if (!suggesting()) {
+      // Aynı bekleme kuralı işlesin diye kapatılmış gibi say.
+      policy.dismissed(session.turns);
+      return hide("sayim");
+    }
+    const composer = adapter.composer();
+    if (!composer || !composer.empty) return hide("yaziyor");
+
+    console.log(`[KafiAI] çıkış kartı gösterildi (tur ${session.turns}, ${source}${reason ? `: ${reason.key}` : ""})`);
+    record("card", `gosterildi_${source}`);
+    exitCard.show(
+      composer.anchor,
+      session.turns,
+      policy.norm,
+      {
+        getDraft: () => buildFreshStartDraft(adapter.readHistory()),
+        onFreshStart: async (draft) => {
+          const copied = await copyToClipboard(draft);
+          if (copied) {
+            // Yeni sohbet açılınca tanınabilsin diye yalnızca platform ve süre yazılır.
+            void chromeStorage.set({ [PENDING_FRESH_KEY]: { platform, until: Date.now() + FRESH_START_WINDOW_MS } });
+            window.open(adapter.newChatUrl(), "_blank", "noopener");
+            record("card_action", "taze_baslat");
+          }
+          console.log(`[KafiAI] taze başlat: ${copied ? "panoya kopyalandı, yeni sohbet açıldı" : "kopyalanamadı"}`);
+          return copied;
+        },
+        onNever: () => {
+          console.log("[KafiAI] kullanıcı 'Bir daha gösterme' dedi");
+          record("card_action", "bir_daha_gosterme");
+          void store.update({ exitCardEnabled: false });
+        },
+        onDismiss: (kind) => {
+          policy.dismissed(session.turns);
+          // "taze": kopyalama başarılıyken zaten sayıldı; ikinci kez sayılmaz.
+          if (kind === "ara") record("card_action", "ara");
+          else if (kind === "kapat") record("card_action", "kapat");
+          console.log(`[KafiAI] çıkış kartı kapandı (${kind})`);
+        },
+        onNotRelevant: () => {
+          console.log("[KafiAI] kullanıcı model önerisi için 'Yerinde değildi' dedi");
+          record("card_action", "yerinde_degil");
+        },
+      },
+      reason,
+    );
+  };
+
+  /** Tur modeli: kullanıcının o ana kadarki mesajlarından döngü olasılığı. Metin günlüğe yazılmaz. */
   const updatePrediction = (turns: number) => {
-    if (userTexts.length < MODEL_MIN_TURN) return;
+    if (capabilities.model !== "on" || userTexts.length < MODEL_MIN_TURN) return;
     lastPrediction = predict(turnFeatures(userTexts));
     policy.noteRisk(lastPrediction.level, turns);
     console.log(
-      `[KafiAI] model: risk %${Math.round(lastPrediction.probability * 100)}, ${lastPrediction.level}, ` +
+      `[KafiAI] model: olasılık %${Math.round(lastPrediction.probability * 100)}, ${lastPrediction.level}, ` +
         `gerekçe ${lastPrediction.reasons.map((r) => r.key).join(", ")}`,
     );
   };
+
+  /** Yeni boş bir sohbet "Taze başlat"tan mı geldi? İşaret bir kez kullanılır ve silinir. */
+  const checkFreshStart = async () => {
+    try {
+      const stored = await chromeStorage.get([PENDING_FRESH_KEY]);
+      const pending = stored[PENDING_FRESH_KEY] as { platform?: unknown; until?: unknown } | undefined;
+      if (!pending) return;
+      await chromeStorage.remove([PENDING_FRESH_KEY]);
+      if (pending.platform === platform && typeof pending.until === "number" && pending.until >= Date.now()) {
+        freshFollowup = true;
+      }
+    } catch {
+      /* depolama okunamazsa yalnızca bu sayaç eksik kalır */
+    }
+  };
+
   const history = new HistoryWatcher(
     () => adapter.readHistory(),
     (texts) => {
@@ -151,7 +220,9 @@ function main(): void {
       policy.reset();
       userTexts = [];
       lastPrediction = null;
+      sentThisVisit = false;
       if (session.key !== null) history.begin(Date.now());
+      else void checkFreshStart();
       if (!first) console.log("[KafiAI] eklenti açıldı");
     }
   };
@@ -168,36 +239,49 @@ function main(): void {
   const stop = adapter.start({
     onBeforeSend: ({ text, anchor }) => {
       if (!active()) return false;
-      if (skipNextCheck) {
+      const check = detector.check(text);
+      if (!check.similar) {
         skipNextCheck = false;
         return false;
       }
-      if (!suggesting()) return false; // yalnızca say: mesaja dokunma
-      const check = detector.check(text);
-      if (!check.similar) return false;
+      record("strip", "tetiklendi");
+      if (skipNextCheck) {
+        // Onarım cümlesi az önce eklendi: aynı mesaj için tekrar sorulmaz.
+        skipNextCheck = false;
+        record("strip", "gizlendi_bekleme");
+        return false;
+      }
+      if (!intervening()) {
+        record("strip", "gizlendi_platform");
+        return false;
+      }
+      if (!suggesting()) {
+        record("strip", "gizlendi_sayim"); // yalnızca say: mesaja dokunma
+        return false;
+      }
       console.log(`[KafiAI] benzer mesaj, gönderim bekletildi (skor ${check.score.toFixed(2)})`);
-      count("stripShown");
+      record("strip", "gosterildi");
       exitCard.hide();
       strip.show(anchor, {
         onSendAnyway: () => {
           console.log("[KafiAI] kullanıcı 'Yine de gönder' dedi");
-          count("stripSendAnyway");
+          record("strip_action", "yine_de_gonder");
           adapter.submitHeld();
         },
         onNotRelevant: () => {
           console.log("[KafiAI] kullanıcı 'Yerinde değildi' dedi");
-          count("notRelevant");
+          record("strip_action", "yerinde_degil");
           adapter.submitHeld();
         },
         onClose: () => {
           console.log("[KafiAI] kullanıcı düzenlemeye döndü");
-          count("stripEdit");
+          record("strip_action", "duzenle");
           adapter.focusComposer();
         },
-        onRepair: (sentence) => {
+        onRepair: (sentence, id) => {
           const ok = adapter.insertText(sentence);
           skipNextCheck = ok;
-          if (ok) count("stripRepair");
+          if (ok) record("repair_button", id);
           console.log(`[KafiAI] onarım cümlesi eklendi: ${ok ? "evet" : "HAYIR (eklenemedi)"}`);
         },
       });
@@ -208,19 +292,20 @@ function main(): void {
       history.cancel();
       strip.hide();
       const n = session.recordSend();
+      sentThisVisit = true;
       if (n === 1) policy.setTask(taskType(text));
       if (exitCard.visible) {
         exitCard.hide(); // kartı yok sayıp yazmaya devam etti
         policy.dismissed(n);
-        count("exitCardClosed");
+        record("card_action", "kapat");
       }
       const check = detector.check(text);
       detector.remember(text);
-      void store.incrementMany(sendCounters(check, suggesting()));
+      userTexts.push(text);
       // Çıkış kartı için tekrar denemesi: farklı kelimelerle yapılanlar da sayılır (yumuşak eşik).
       // Öneriler açık da kapalı da olsa aynı kural işler; böylece iki mod karşılaştırılabilir.
       if (check.soft) policy.noteRepeat();
-      userTexts.push(text);
+      record("send", check.tooShort ? "kisa" : check.similar ? "benzer" : "farkli");
       updatePrediction(n);
 
       const verdict = check.tooShort ? "kısa, bakılmadı" : check.similar ? "BENZER" : "farklı";
@@ -237,6 +322,12 @@ function main(): void {
       if (!active()) return;
       console.log("[KafiAI] cevap sinyali görülmedi (sayfa yapısı değişmiş olabilir)");
     },
+    onRegenerate: () => {
+      if (active()) record("regenerate", "-");
+    },
+    onEdit: () => {
+      if (active()) record("edit", "-");
+    },
   });
 
   // Tek sayfalık uygulama: adres değişince sohbetin değişip değişmediğine bak.
@@ -249,8 +340,10 @@ function main(): void {
     if (location.href === lastHref) return;
     const previous = lastHref;
     lastHref = location.href;
-    const result = session.onNavigate(adapter.conversationKey(new URL(location.href)));
+    const nextKey = adapter.conversationKey(new URL(location.href));
+    const result = session.onNavigate(nextKey);
     if (result === "reset") {
+      endConversation(); // önceki sohbetin sonucu, durum sıfırlanmadan önce
       detector.reset();
       strip.hide();
       exitCard.hide();
@@ -259,6 +352,7 @@ function main(): void {
       lastPrediction = null;
       history.cancel();
       if (active() && session.key !== null) history.begin(Date.now()); // başka bir var olan sohbet açıldı
+      else if (active()) void checkFreshStart();
     }
     if (active()) {
       console.log(`[KafiAI] sohbet adresi değişti: ${result} (${mask(previous)} → ${mask(location.href)})`);
@@ -266,9 +360,15 @@ function main(): void {
   }, NAV_POLL_MS);
 
   window.addEventListener("pagehide", () => {
+    endConversation();
+    void counters.flush();
     stop();
     window.clearInterval(navTimer);
     window.clearInterval(historyTimer);
+  });
+  // Sekme arka plana geçince biriken sayaçlar yazılır (sekme sonra kapatılabilir).
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") void counters.flush();
   });
 
   console.log(`[KafiAI] ${adapter.name} adaptörü hazır`);
