@@ -102,6 +102,7 @@ export function isGenerating(root: ParentNode = document): boolean {
 
 export const chatgptAdapter: Adapter = {
   name: "chatgpt",
+  platform: "chatgpt",
 
   matches(url) {
     return HOSTS.has(url.hostname);
