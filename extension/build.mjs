@@ -1,5 +1,5 @@
 import { build, context } from "esbuild";
-import { cpSync, mkdirSync, rmSync } from "node:fs";
+import { cpSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 
 const watch = process.argv.includes("--watch");
 
@@ -8,11 +8,8 @@ mkdirSync("dist", { recursive: true });
 cpSync("public", "dist", { recursive: true });
 
 const options = {
-  entryPoints: {
-    content: "src/content/index.ts",
-    background: "src/background/index.ts",
-    popup: "src/popup/index.ts",
-  },
+  // Giriş listesi build-entries.json içinde; ağ testi de aynı listeyi okur.
+  entryPoints: JSON.parse(readFileSync("build-entries.json", "utf8")).entries,
   outdir: "dist",
   bundle: true,
   format: "iife",

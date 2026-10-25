@@ -1,0 +1,8 @@
+{
+  "note": "Derlenecek giriş dosyaları. build.mjs ve ağ testi (src/no-network.test.ts) bu listeyi okur; yeni bir sayfa eklenince test onu kendiliğinden kapsar.",
+  "entries": {
+    "content": "src/content/index.ts",
+    "background": "src/background/index.ts",
+    "popup": "src/popup/index.ts"
+  }
+}
