@@ -1,0 +1,23 @@
+{
+  "note": "Kişisel ve duygusal sohbet kuralları. Eklenti (src/core/personal.ts) ve Python (src/kafiai/personal.py) bu dosyayı okur. Eşleşen bir mesaj gelince sohbet kişisel sayılır ve o sohbette öneri gösterilmez. Metin sadeleştirilir (Türkçe küçük harf, noktalama boşluğa), sonra kelime grupları ve kelime başları aranır. Yanlış pozitifin bedeli küçük (bir öneri gösterilmez), yanlış negatifin bedeli büyük; liste bu yüzden geniş tutuldu, ama kurgu ve iş metinlerinde sık geçen tek kelimelerden kaçınıldı.",
+  "phrases": [
+    "kendimi kötü hissediyorum", "kendimi çok kötü", "kendimi yalnız", "kendimi değersiz", "kendimi boşlukta",
+    "çok üzgünüm", "çok mutsuzum", "mutsuzum", "moralim bozuk", "moralim çok", "canım sıkkın", "canım çok sıkkın",
+    "içim daralıyor", "ağlıyorum", "ağlamak istiyorum", "yalnız hissediyorum", "kimsem yok",
+    "depresyondayım", "depresyona girdim", "depresyondan", "anksiyetem", "kaygı bozukluğu", "panik atak",
+    "uyuyamıyorum", "dayanamıyorum", "tükendim", "ne yapacağımı bilmiyorum",
+    "sevgilimden ayrıldım", "sevgilim beni", "sevgilimle", "eşimle", "eşim beni", "beni terk etti",
+    "aldatıldım", "beni aldattı", "kalbim kırıldı",
+    "vefat etti", "kaybettim annemi", "kaybettim babamı", "annemi kaybettim", "babamı kaybettim", "yas tutuyorum",
+    "psikoloğum", "terapistim", "kendime zarar", "ölmek istiyorum", "yaşamak istemiyorum", "intihar",
+    "i feel so", "i feel sad", "i feel lonely", "i feel empty", "i feel worthless", "i feel hopeless", "i feel depressed",
+    "i m depressed", "i am depressed", "i m so sad", "i am so sad", "i m lonely", "i am lonely", "i m heartbroken",
+    "i m crying", "i can t stop crying", "i hate myself", "i m so stressed", "i m anxious", "i have anxiety",
+    "my anxiety", "my depression", "panic attack", "my therapist",
+    "my boyfriend", "my girlfriend", "my husband", "my wife", "my ex boyfriend", "my ex girlfriend", "my ex husband", "my ex wife", "broke up with", "dumped me", "cheated on me",
+    "passed away", "i m grieving", "lost my mom", "lost my dad", "lost my mother", "lost my father",
+    "kill myself", "want to die", "self harm", "hurt myself", "end my life", "suicidal", "suicide"
+  ],
+  "fiction_markers": ["write a story", "write a poem", "hikaye yaz", "şiir yaz", "senaryo yaz", "roleplay", "role play", "fanfic", "write a scene", "character"],
+  "fiction_exempt": ["kill myself", "want to die", "self harm", "hurt myself", "end my life", "suicidal", "suicide", "kendime zarar", "ölmek istiyorum", "yaşamak istemiyorum", "intihar"]
+}
