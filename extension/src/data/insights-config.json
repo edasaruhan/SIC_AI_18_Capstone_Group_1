@@ -1,0 +1,30 @@
+{
+  "note": "Haftalık içgörü eşikleri ve metinleri. Eklenti (src/core/insights.ts) ve Python (src/kafiai/insights.py) bu dosyayı okur. Eşikler küçük örneklemde yanlış bir örüntü söylememek için: bir şey söylenmeden önce yeterli sohbet ve yeterli tekrar olmalı.",
+  "window_days": 7,
+  "min_conversations": 5,
+  "min_task_conversations": 3,
+  "min_pattern_loops": 3,
+  "min_pattern_share": 0.5,
+  "long_buckets": ["7-10", "11+"],
+  "slot_labels": {
+    "00-06": "gece",
+    "06-12": "sabah",
+    "12-18": "öğleden sonra",
+    "18-24": "akşam"
+  },
+  "platform_labels": {
+    "chatgpt": "ChatGPT",
+    "gemini": "Gemini",
+    "claude": "Claude",
+    "copilot": "Copilot",
+    "google_ai_mode": "Google AI Modu"
+  },
+  "tips": {
+    "kod": "İstersen ilk mesaja hata çıktısını, kullandığın dili ve beklediğin sonucu birlikte yaz.",
+    "ceviri": "İstersen hedef dili, metnin kime gideceğini ve ne kadar resmî olacağını baştan belirt.",
+    "ozet": "İstersen özetin uzunluğunu ve kimin okuyacağını baştan söyle.",
+    "yazma": "İstersen tonu, uzunluğu ve kime yazıldığını ilk mesajda ver; beğendiğin bir örnek de işe yarar.",
+    "soru": "İstersen neyi zaten bildiğini ve cevabı ne için kullanacağını ekle.",
+    "diger": "İstersen ilk mesajda ne elde etmek istediğini tek cümleyle yaz."
+  }
+}

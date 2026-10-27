@@ -1,0 +1,1407 @@
+[
+ {
+  "today": "2026-10-26",
+  "days": {},
+  "expected": {
+   "days": 7,
+   "conversations": 0,
+   "loops": 0,
+   "similar_sends": 0,
+   "top_slot": null,
+   "fresh_starts": 0,
+   "enough": false,
+   "tasks": []
+  }
+ },
+ {
+  "today": "2026-10-26",
+  "days": {
+   "2026-10-26": {
+    "phase": "oneri",
+    "c": {
+     "conversation|chatgpt|yazma|1-3|kisa|normal": 1
+    }
+   },
+   "2026-10-25": {
+    "phase": "oneri",
+    "c": {
+     "conversation|chatgpt|soru|4-6|kisa|dongu": 2
+    }
+   }
+  },
+  "expected": {
+   "days": 7,
+   "conversations": 3,
+   "loops": 2,
+   "similar_sends": 0,
+   "top_slot": null,
+   "fresh_starts": 0,
+   "enough": false,
+   "tasks": [
+    {
+     "task": "soru",
+     "conversations": 2,
+     "loops": 2,
+     "long": 0,
+     "top_slot": null,
+     "platforms": [
+      [
+       "chatgpt",
+       2
+      ]
+     ],
+     "enough": false
+    },
+    {
+     "task": "yazma",
+     "conversations": 1,
+     "loops": 0,
+     "long": 0,
+     "top_slot": null,
+     "platforms": [
+      [
+       "chatgpt",
+       1
+      ]
+     ],
+     "enough": false
+    }
+   ]
+  }
+ },
+ {
+  "today": "2026-10-26",
+  "days": {
+   "2026-10-26": {
+    "phase": "oneri",
+    "c": {
+     "send|chatgpt|18-24|kod|1-3|benzer": 3,
+     "send|chatgpt|18-24|kod|4-6|benzer": 3,
+     "card_action|chatgpt|taze_baslat": 2,
+     "send|claude|18-24|soru|4-6|benzer": 3
+    }
+   },
+   "2026-10-25": {
+    "phase": "oneri",
+    "c": {
+     "send|chatgpt|12-18|soru|1-3|benzer": 2,
+     "send|gemini|18-24|soru|11+|farkli": 2,
+     "conversation|chatgpt|diger|4-6|kisa|normal": 2,
+     "send|gemini|12-18|soru|1-3|benzer": 3
+    }
+   },
+   "2026-10-24": {
+    "phase": "oneri",
+    "c": {
+     "send|gemini|18-24|yazma|1-3|benzer": 3,
+     "send|gemini|18-24|soru|11+|farkli": 1,
+     "card_action|chatgpt|taze_baslat": 2,
+     "send|claude|18-24|diger|11+|farkli": 3
+    }
+   },
+   "2026-10-23": {
+    "phase": "oneri",
+    "c": {
+     "conversation|claude|ozet|1-3|orta|normal": 1,
+     "send|gemini|18-24|ceviri|4-6|farkli": 2,
+     "strip|gemini|kod|gosterildi": 2,
+     "conversation|gemini|yazma|7-10|kisa|normal": 3
+    }
+   },
+   "2026-10-22": {
+    "phase": "oneri",
+    "c": {
+     "conversation|gemini|ozet|11+|kisa|dongu": 1,
+     "conversation|chatgpt|diger|4-6|kisa|normal": 3,
+     "conversation|gemini|kod|4-6|orta|normal": 2,
+     "send|gemini|00-06|yazma|11+|farkli": 2
+    }
+   }
+  },
+  "expected": {
+   "days": 7,
+   "conversations": 12,
+   "loops": 1,
+   "similar_sends": 17,
+   "top_slot": "18-24",
+   "fresh_starts": 4,
+   "enough": true,
+   "tasks": [
+    {
+     "task": "diger",
+     "conversations": 5,
+     "loops": 0,
+     "long": 0,
+     "top_slot": null,
+     "platforms": [
+      [
+       "chatgpt",
+       5
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "yazma",
+     "conversations": 3,
+     "loops": 0,
+     "long": 3,
+     "top_slot": "18-24",
+     "platforms": [
+      [
+       "gemini",
+       3
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "ozet",
+     "conversations": 2,
+     "loops": 1,
+     "long": 1,
+     "top_slot": null,
+     "platforms": [
+      [
+       "claude",
+       1
+      ],
+      [
+       "gemini",
+       1
+      ]
+     ],
+     "enough": false
+    },
+    {
+     "task": "kod",
+     "conversations": 2,
+     "loops": 0,
+     "long": 0,
+     "top_slot": "18-24",
+     "platforms": [
+      [
+       "gemini",
+       2
+      ]
+     ],
+     "enough": false
+    }
+   ]
+  }
+ },
+ {
+  "today": "2026-10-26",
+  "days": {
+   "2026-10-26": {
+    "phase": "oneri",
+    "c": {
+     "conversation|gemini|diger|11+|kisa|dongu": 1,
+     "strip|gemini|kod|gosterildi": 2,
+     "conversation|gemini|soru|1-3|kisa|dongu": 3,
+     "conversation|chatgpt|ozet|1-3|kisa|dongu": 3,
+     "conversation|claude|ozet|7-10|uzun|normal": 2,
+     "conversation|gemini|yazma|11+|orta|normal": 1,
+     "conversation|claude|ozet|7-10|orta|normal": 1,
+     "send|chatgpt|12-18|ceviri|1-3|farkli": 3
+    }
+   },
+   "2026-10-25": {
+    "phase": "oneri",
+    "c": {
+     "card_action|chatgpt|taze_baslat": 7,
+     "conversation|chatgpt|ozet|4-6|uzun|normal": 3,
+     "conversation|chatgpt|soru|4-6|kisa|normal": 3,
+     "send|gemini|00-06|ozet|11+|farkli": 1,
+     "send|gemini|18-24|ozet|1-3|benzer": 1,
+     "conversation|chatgpt|ozet|4-6|orta|normal": 3
+    }
+   },
+   "2026-10-24": {
+    "phase": "oneri",
+    "c": {
+     "card_action|chatgpt|taze_baslat": 2,
+     "strip|gemini|kod|gosterildi": 2,
+     "send|chatgpt|00-06|yazma|4-6|farkli": 1,
+     "send|claude|18-24|yazma|11+|benzer": 3,
+     "conversation|chatgpt|kod|4-6|uzun|normal": 3,
+     "conversation|claude|yazma|7-10|kisa|normal": 3,
+     "conversation|chatgpt|diger|1-3|uzun|normal": 1,
+     "send|chatgpt|06-12|kod|7-10|benzer": 2
+    }
+   },
+   "2026-10-23": {
+    "phase": "oneri",
+    "c": {
+     "send|claude|18-24|ceviri|1-3|farkli": 2,
+     "send|claude|12-18|soru|4-6|benzer": 2,
+     "send|claude|12-18|ceviri|4-6|farkli": 3,
+     "send|claude|18-24|kod|1-3|benzer": 1,
+     "conversation|chatgpt|soru|11+|uzun|dongu": 1,
+     "send|claude|06-12|diger|7-10|farkli": 3,
+     "send|gemini|12-18|diger|7-10|benzer": 2,
+     "conversation|chatgpt|yazma|11+|orta|dongu": 3
+    }
+   },
+   "2026-10-22": {
+    "phase": "oneri",
+    "c": {
+     "conversation|chatgpt|ceviri|7-10|kisa|dongu": 3,
+     "send|gemini|12-18|yazma|4-6|benzer": 2,
+     "card_action|chatgpt|taze_baslat": 1,
+     "strip|gemini|kod|gosterildi": 2,
+     "conversation|gemini|soru|11+|orta|normal": 1,
+     "conversation|chatgpt|diger|7-10|kisa|normal": 3,
+     "send|claude|18-24|soru|7-10|benzer": 1
+    }
+   },
+   "2026-10-21": {
+    "phase": "oneri",
+    "c": {
+     "strip|gemini|kod|gosterildi": 1,
+     "conversation|gemini|kod|4-6|orta|dongu": 2,
+     "card_action|chatgpt|taze_baslat": 5,
+     "send|claude|18-24|diger|7-10|benzer": 2,
+     "conversation|claude|ceviri|11+|kisa|normal": 1,
+     "send|gemini|12-18|kod|7-10|benzer": 2,
+     "conversation|claude|yazma|7-10|uzun|dongu": 1
+    }
+   },
+   "2026-10-20": {
+    "phase": "oneri",
+    "c": {
+     "send|chatgpt|06-12|ozet|1-3|benzer": 1,
+     "strip|gemini|kod|gosterildi": 3,
+     "conversation|chatgpt|ozet|11+|uzun|normal": 1,
+     "conversation|chatgpt|ozet|1-3|kisa|dongu": 3,
+     "send|chatgpt|12-18|yazma|1-3|farkli": 3,
+     "send|gemini|12-18|diger|4-6|benzer": 2,
+     "conversation|claude|diger|4-6|orta|normal": 1,
+     "card_action|chatgpt|taze_baslat": 1
+    }
+   },
+   "2026-10-19": {
+    "phase": "oneri",
+    "c": {
+     "conversation|claude|ozet|11+|kisa|dongu": 1,
+     "send|gemini|12-18|soru|4-6|farkli": 1,
+     "send|chatgpt|12-18|ozet|7-10|farkli": 3,
+     "conversation|chatgpt|ozet|4-6|orta|dongu": 1,
+     "conversation|chatgpt|yazma|7-10|uzun|normal": 1,
+     "conversation|chatgpt|kod|7-10|kisa|dongu": 2,
+     "send|gemini|18-24|diger|4-6|benzer": 3,
+     "strip|gemini|kod|gosterildi": 1
+    }
+   },
+   "2026-10-18": {
+    "phase": "oneri",
+    "c": {
+     "send|claude|18-24|ozet|11+|benzer": 2,
+     "send|claude|18-24|diger|4-6|benzer": 3,
+     "send|claude|12-18|kod|1-3|benzer": 1,
+     "send|chatgpt|18-24|soru|1-3|benzer": 3,
+     "send|chatgpt|12-18|yazma|1-3|benzer": 3,
+     "send|claude|12-18|kod|7-10|benzer": 3,
+     "send|chatgpt|18-24|yazma|11+|benzer": 2,
+     "strip|gemini|kod|gosterildi": 2
+    }
+   },
+   "2026-10-17": {
+    "phase": "oneri",
+    "c": {
+     "send|claude|12-18|kod|4-6|farkli": 2,
+     "send|claude|12-18|kod|11+|benzer": 2,
+     "conversation|claude|kod|4-6|uzun|normal": 2,
+     "send|gemini|18-24|kod|4-6|farkli": 1,
+     "strip|gemini|kod|gosterildi": 2,
+     "conversation|chatgpt|soru|11+|orta|normal": 1,
+     "conversation|chatgpt|ceviri|7-10|orta|dongu": 3
+    }
+   }
+  },
+  "expected": {
+   "days": 7,
+   "conversations": 47,
+   "loops": 20,
+   "similar_sends": 21,
+   "top_slot": null,
+   "fresh_starts": 16,
+   "enough": true,
+   "tasks": [
+    {
+     "task": "ozet",
+     "conversations": 16,
+     "loops": 6,
+     "long": 4,
+     "top_slot": null,
+     "platforms": [
+      [
+       "chatgpt",
+       13
+      ],
+      [
+       "claude",
+       3
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "yazma",
+     "conversations": 8,
+     "loops": 4,
+     "long": 8,
+     "top_slot": "18-24",
+     "platforms": [
+      [
+       "claude",
+       4
+      ],
+      [
+       "chatgpt",
+       3
+      ],
+      [
+       "gemini",
+       1
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "soru",
+     "conversations": 8,
+     "loops": 4,
+     "long": 2,
+     "top_slot": "12-18",
+     "platforms": [
+      [
+       "chatgpt",
+       4
+      ],
+      [
+       "gemini",
+       4
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "diger",
+     "conversations": 6,
+     "loops": 1,
+     "long": 4,
+     "top_slot": "12-18",
+     "platforms": [
+      [
+       "chatgpt",
+       4
+      ],
+      [
+       "claude",
+       1
+      ],
+      [
+       "gemini",
+       1
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "kod",
+     "conversations": 5,
+     "loops": 2,
+     "long": 0,
+     "top_slot": null,
+     "platforms": [
+      [
+       "chatgpt",
+       3
+      ],
+      [
+       "gemini",
+       2
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "ceviri",
+     "conversations": 4,
+     "loops": 3,
+     "long": 4,
+     "top_slot": null,
+     "platforms": [
+      [
+       "chatgpt",
+       3
+      ],
+      [
+       "claude",
+       1
+      ]
+     ],
+     "enough": true
+    }
+   ]
+  }
+ },
+ {
+  "today": "2026-10-26",
+  "days": {
+   "2026-10-26": {
+    "phase": "oneri",
+    "c": {
+     "card_action|chatgpt|taze_baslat": 8,
+     "conversation|chatgpt|diger|7-10|kisa|normal": 2,
+     "conversation|chatgpt|kod|11+|uzun|normal": 2,
+     "conversation|chatgpt|yazma|7-10|orta|normal": 1,
+     "conversation|gemini|yazma|1-3|kisa|normal": 1,
+     "strip|gemini|kod|gosterildi": 6,
+     "conversation|chatgpt|yazma|11+|uzun|dongu": 2,
+     "conversation|claude|ozet|4-6|kisa|normal": 2,
+     "send|chatgpt|18-24|kod|11+|benzer": 3,
+     "conversation|claude|yazma|11+|uzun|dongu": 3,
+     "conversation|claude|ceviri|4-6|orta|normal": 2,
+     "conversation|gemini|diger|7-10|orta|normal": 1,
+     "conversation|claude|diger|11+|kisa|dongu": 3,
+     "conversation|chatgpt|soru|11+|uzun|dongu": 2,
+     "send|claude|12-18|ceviri|7-10|benzer": 2
+    }
+   },
+   "2026-10-25": {
+    "phase": "oneri",
+    "c": {
+     "conversation|gemini|soru|4-6|kisa|normal": 2,
+     "conversation|claude|soru|4-6|orta|normal": 2,
+     "send|gemini|18-24|ceviri|4-6|benzer": 2,
+     "card_action|chatgpt|taze_baslat": 4,
+     "conversation|gemini|yazma|7-10|kisa|dongu": 1,
+     "send|gemini|18-24|kod|1-3|farkli": 3,
+     "conversation|chatgpt|ceviri|4-6|kisa|normal": 3,
+     "conversation|claude|diger|11+|kisa|normal": 2,
+     "conversation|chatgpt|ceviri|1-3|uzun|normal": 2,
+     "strip|gemini|kod|gosterildi": 5,
+     "conversation|claude|yazma|1-3|kisa|dongu": 2,
+     "send|claude|18-24|ceviri|1-3|benzer": 3,
+     "conversation|gemini|ozet|7-10|uzun|dongu": 2,
+     "send|claude|18-24|diger|7-10|benzer": 1,
+     "send|gemini|12-18|diger|7-10|farkli": 2,
+     "send|chatgpt|18-24|diger|1-3|benzer": 2,
+     "send|chatgpt|12-18|ozet|7-10|benzer": 3
+    }
+   },
+   "2026-10-24": {
+    "phase": "oneri",
+    "c": {
+     "send|chatgpt|18-24|yazma|1-3|benzer": 2,
+     "conversation|chatgpt|soru|4-6|orta|dongu": 3,
+     "conversation|gemini|yazma|7-10|uzun|dongu": 1,
+     "strip|gemini|kod|gosterildi": 3,
+     "conversation|claude|soru|11+|kisa|normal": 3,
+     "send|gemini|18-24|ceviri|1-3|benzer": 1,
+     "conversation|gemini|yazma|1-3|uzun|dongu": 2,
+     "conversation|gemini|yazma|1-3|kisa|normal": 2,
+     "conversation|claude|yazma|4-6|orta|normal": 3,
+     "card_action|chatgpt|taze_baslat": 3,
+     "send|chatgpt|18-24|kod|11+|benzer": 2,
+     "conversation|chatgpt|ozet|4-6|uzun|dongu": 3,
+     "conversation|gemini|ozet|1-3|orta|normal": 3,
+     "send|gemini|12-18|kod|4-6|benzer": 2,
+     "send|gemini|18-24|ozet|11+|farkli": 1,
+     "conversation|claude|ozet|4-6|uzun|dongu": 2,
+     "conversation|claude|kod|4-6|orta|dongu": 1,
+     "send|claude|18-24|ceviri|11+|benzer": 1
+    }
+   },
+   "2026-10-23": {
+    "phase": "oneri",
+    "c": {
+     "conversation|chatgpt|ceviri|1-3|orta|normal": 3,
+     "strip|gemini|kod|gosterildi": 1,
+     "conversation|gemini|yazma|4-6|uzun|normal": 3,
+     "send|gemini|18-24|ozet|7-10|farkli": 1,
+     "send|chatgpt|12-18|ozet|4-6|farkli": 1,
+     "conversation|chatgpt|soru|4-6|uzun|dongu": 3,
+     "send|chatgpt|18-24|ceviri|11+|farkli": 1,
+     "card_action|chatgpt|taze_baslat": 3,
+     "conversation|chatgpt|soru|4-6|kisa|normal": 3,
+     "send|claude|00-06|diger|7-10|benzer": 1,
+     "conversation|chatgpt|kod|4-6|orta|dongu": 3,
+     "send|chatgpt|12-18|yazma|7-10|benzer": 3,
+     "conversation|chatgpt|kod|11+|uzun|normal": 1,
+     "send|gemini|12-18|diger|1-3|benzer": 2,
+     "send|gemini|12-18|yazma|1-3|farkli": 3,
+     "send|gemini|12-18|ozet|4-6|farkli": 3,
+     "send|chatgpt|12-18|yazma|1-3|benzer": 2,
+     "send|gemini|12-18|ceviri|1-3|benzer": 3,
+     "conversation|gemini|kod|7-10|uzun|normal": 1
+    }
+   },
+   "2026-10-22": {
+    "phase": "oneri",
+    "c": {
+     "conversation|gemini|ceviri|4-6|kisa|dongu": 2,
+     "send|chatgpt|12-18|yazma|7-10|benzer": 3,
+     "strip|gemini|kod|gosterildi": 6,
+     "conversation|claude|soru|4-6|uzun|dongu": 3,
+     "send|chatgpt|06-12|soru|4-6|benzer": 2,
+     "conversation|chatgpt|ceviri|4-6|uzun|dongu": 1,
+     "card_action|chatgpt|taze_baslat": 8,
+     "conversation|gemini|kod|11+|uzun|normal": 6,
+     "send|gemini|18-24|yazma|7-10|farkli": 3,
+     "send|chatgpt|18-24|yazma|4-6|farkli": 6,
+     "send|gemini|18-24|yazma|1-3|benzer": 1,
+     "conversation|claude|ceviri|1-3|uzun|normal": 3,
+     "send|chatgpt|18-24|diger|4-6|benzer": 1,
+     "send|chatgpt|18-24|ozet|4-6|benzer": 1
+    }
+   },
+   "2026-10-21": {
+    "phase": "oneri",
+    "c": {
+     "strip|gemini|kod|gosterildi": 8,
+     "conversation|gemini|soru|4-6|orta|normal": 2,
+     "conversation|gemini|ceviri|7-10|uzun|normal": 2,
+     "conversation|gemini|kod|1-3|uzun|normal": 2,
+     "send|claude|12-18|ozet|11+|farkli": 5,
+     "send|chatgpt|12-18|ozet|7-10|farkli": 3,
+     "conversation|chatgpt|ceviri|11+|kisa|normal": 3,
+     "conversation|chatgpt|kod|7-10|orta|dongu": 3,
+     "conversation|chatgpt|yazma|7-10|uzun|dongu": 1,
+     "conversation|gemini|ceviri|4-6|kisa|dongu": 3,
+     "conversation|chatgpt|kod|4-6|uzun|normal": 2,
+     "card_action|chatgpt|taze_baslat": 1,
+     "conversation|claude|ozet|11+|uzun|normal": 3,
+     "send|chatgpt|00-06|kod|1-3|farkli": 1,
+     "conversation|chatgpt|kod|1-3|uzun|normal": 3
+    }
+   },
+   "2026-10-20": {
+    "phase": "oneri",
+    "c": {
+     "send|claude|18-24|soru|4-6|farkli": 1,
+     "conversation|chatgpt|diger|11+|uzun|normal": 1,
+     "conversation|gemini|diger|11+|kisa|normal": 3,
+     "send|chatgpt|12-18|ceviri|1-3|benzer": 2,
+     "card_action|chatgpt|taze_baslat": 9,
+     "strip|gemini|kod|gosterildi": 5,
+     "send|gemini|18-24|diger|7-10|farkli": 3,
+     "conversation|claude|kod|4-6|orta|dongu": 3,
+     "conversation|chatgpt|diger|7-10|kisa|normal": 2,
+     "send|gemini|18-24|yazma|1-3|benzer": 2,
+     "send|gemini|18-24|soru|1-3|benzer": 1,
+     "conversation|chatgpt|kod|4-6|orta|dongu": 3,
+     "conversation|chatgpt|ceviri|1-3|uzun|dongu": 3,
+     "conversation|claude|ozet|4-6|uzun|normal": 1,
+     "conversation|chatgpt|kod|1-3|kisa|normal": 1
+    }
+   },
+   "2026-10-19": {
+    "phase": "oneri",
+    "c": {
+     "send|gemini|12-18|diger|4-6|farkli": 2,
+     "conversation|gemini|kod|7-10|orta|normal": 1,
+     "send|gemini|18-24|ozet|1-3|farkli": 1,
+     "send|chatgpt|12-18|soru|4-6|benzer": 3,
+     "card_action|chatgpt|taze_baslat": 5,
+     "send|claude|12-18|kod|7-10|farkli": 1,
+     "send|chatgpt|12-18|soru|7-10|benzer": 2,
+     "conversation|chatgpt|kod|1-3|orta|normal": 3,
+     "send|claude|12-18|yazma|11+|benzer": 2,
+     "conversation|gemini|ozet|11+|uzun|normal": 1,
+     "conversation|claude|ceviri|11+|kisa|normal": 3,
+     "send|claude|18-24|soru|7-10|benzer": 2,
+     "send|claude|18-24|yazma|7-10|benzer": 1,
+     "conversation|claude|diger|4-6|uzun|dongu": 2,
+     "conversation|claude|soru|4-6|uzun|dongu": 1,
+     "send|claude|12-18|ceviri|7-10|benzer": 2,
+     "strip|gemini|kod|gosterildi": 4
+    }
+   },
+   "2026-10-18": {
+    "phase": "oneri",
+    "c": {
+     "strip|gemini|kod|gosterildi": 3,
+     "conversation|chatgpt|ceviri|7-10|uzun|normal": 2,
+     "conversation|chatgpt|diger|1-3|orta|dongu": 2,
+     "send|chatgpt|18-24|diger|4-6|farkli": 2,
+     "conversation|gemini|soru|11+|kisa|normal": 1,
+     "send|claude|18-24|ceviri|4-6|benzer": 3,
+     "conversation|gemini|ozet|7-10|uzun|normal": 1,
+     "card_action|chatgpt|taze_baslat": 1,
+     "send|claude|06-12|ozet|11+|farkli": 2,
+     "conversation|gemini|soru|4-6|uzun|normal": 1,
+     "conversation|gemini|kod|1-3|orta|normal": 1,
+     "conversation|chatgpt|soru|7-10|kisa|normal": 2,
+     "send|claude|12-18|diger|7-10|farkli": 2,
+     "send|gemini|12-18|yazma|1-3|farkli": 3,
+     "conversation|gemini|yazma|11+|kisa|dongu": 1,
+     "send|gemini|18-24|soru|7-10|benzer": 1,
+     "conversation|gemini|soru|4-6|orta|normal": 1,
+     "conversation|chatgpt|diger|4-6|orta|normal": 3,
+     "send|chatgpt|18-24|yazma|7-10|benzer": 2
+    }
+   },
+   "2026-10-17": {
+    "phase": "oneri",
+    "c": {
+     "conversation|chatgpt|ozet|11+|uzun|normal": 2,
+     "send|gemini|18-24|ozet|4-6|farkli": 2,
+     "send|gemini|12-18|diger|7-10|benzer": 2,
+     "card_action|chatgpt|taze_baslat": 1,
+     "conversation|claude|ozet|4-6|uzun|normal": 3,
+     "send|claude|12-18|diger|7-10|farkli": 3,
+     "conversation|chatgpt|ceviri|4-6|orta|normal": 1,
+     "conversation|gemini|soru|4-6|uzun|normal": 3,
+     "strip|gemini|kod|gosterildi": 1,
+     "send|claude|12-18|ceviri|11+|benzer": 3,
+     "conversation|gemini|diger|1-3|uzun|dongu": 2,
+     "send|chatgpt|12-18|yazma|11+|benzer": 3,
+     "send|gemini|12-18|ceviri|7-10|farkli": 3,
+     "send|claude|18-24|ozet|11+|farkli": 3,
+     "conversation|claude|ozet|1-3|kisa|normal": 1,
+     "send|gemini|00-06|soru|11+|farkli": 1,
+     "conversation|claude|yazma|4-6|orta|dongu": 3,
+     "conversation|gemini|soru|4-6|orta|normal": 2,
+     "send|claude|18-24|ozet|7-10|farkli": 2,
+     "conversation|gemini|soru|7-10|kisa|normal": 2
+    }
+   },
+   "2026-10-16": {
+    "phase": "oneri",
+    "c": {
+     "send|gemini|18-24|ceviri|1-3|benzer": 2,
+     "send|gemini|12-18|yazma|7-10|benzer": 1,
+     "conversation|gemini|soru|1-3|uzun|normal": 3,
+     "conversation|chatgpt|diger|1-3|kisa|dongu": 3,
+     "send|claude|00-06|diger|4-6|benzer": 2,
+     "send|claude|12-18|ozet|7-10|farkli": 1,
+     "send|gemini|12-18|yazma|1-3|benzer": 2,
+     "send|gemini|12-18|diger|11+|benzer": 2,
+     "send|claude|18-24|ceviri|4-6|benzer": 2,
+     "conversation|claude|diger|1-3|kisa|dongu": 1,
+     "conversation|chatgpt|ozet|4-6|orta|normal": 3,
+     "conversation|chatgpt|ozet|4-6|uzun|dongu": 2,
+     "send|claude|18-24|kod|1-3|benzer": 1,
+     "conversation|claude|diger|1-3|orta|normal": 2,
+     "send|chatgpt|18-24|soru|1-3|farkli": 2,
+     "strip|gemini|kod|gosterildi": 3,
+     "send|claude|12-18|ozet|4-6|farkli": 2,
+     "conversation|gemini|ozet|7-10|orta|normal": 1,
+     "send|claude|12-18|soru|1-3|benzer": 3,
+     "card_action|chatgpt|taze_baslat": 3
+    }
+   },
+   "2026-10-15": {
+    "phase": "oneri",
+    "c": {
+     "send|chatgpt|18-24|soru|4-6|farkli": 2,
+     "send|gemini|18-24|ceviri|1-3|farkli": 1,
+     "card_action|chatgpt|taze_baslat": 5,
+     "conversation|claude|diger|11+|orta|normal": 1,
+     "send|gemini|06-12|diger|4-6|farkli": 3,
+     "conversation|gemini|yazma|4-6|orta|normal": 1,
+     "send|gemini|18-24|kod|4-6|farkli": 3,
+     "send|gemini|12-18|yazma|4-6|benzer": 1,
+     "conversation|chatgpt|diger|7-10|orta|normal": 3,
+     "conversation|claude|ceviri|4-6|kisa|normal": 2,
+     "send|chatgpt|12-18|ozet|7-10|benzer": 1,
+     "conversation|claude|yazma|4-6|orta|normal": 2,
+     "conversation|gemini|soru|4-6|orta|dongu": 2,
+     "conversation|chatgpt|yazma|1-3|kisa|dongu": 1,
+     "send|claude|12-18|soru|11+|benzer": 3,
+     "strip|gemini|kod|gosterildi": 2,
+     "conversation|chatgpt|diger|1-3|uzun|normal": 2,
+     "conversation|chatgpt|ozet|4-6|uzun|dongu": 1,
+     "conversation|gemini|ozet|1-3|uzun|dongu": 1
+    }
+   },
+   "2026-10-14": {
+    "phase": "oneri",
+    "c": {
+     "conversation|claude|diger|11+|kisa|dongu": 1,
+     "conversation|chatgpt|ceviri|7-10|uzun|normal": 2,
+     "send|chatgpt|18-24|ozet|11+|benzer": 2,
+     "send|chatgpt|12-18|diger|1-3|farkli": 3,
+     "strip|gemini|kod|gosterildi": 8,
+     "conversation|chatgpt|kod|7-10|uzun|dongu": 2,
+     "card_action|chatgpt|taze_baslat": 6,
+     "conversation|gemini|ozet|4-6|orta|dongu": 3,
+     "conversation|gemini|ceviri|1-3|kisa|normal": 2,
+     "send|chatgpt|12-18|ozet|11+|farkli": 1,
+     "conversation|gemini|soru|7-10|orta|dongu": 2,
+     "send|gemini|18-24|kod|4-6|benzer": 3,
+     "send|gemini|12-18|ozet|11+|farkli": 1,
+     "conversation|gemini|ceviri|1-3|uzun|normal": 1,
+     "send|claude|12-18|yazma|1-3|farkli": 1
+    }
+   },
+   "2026-10-13": {
+    "phase": "oneri",
+    "c": {
+     "conversation|chatgpt|yazma|4-6|orta|normal": 1,
+     "conversation|chatgpt|soru|4-6|uzun|dongu": 1,
+     "send|chatgpt|18-24|ozet|4-6|benzer": 1,
+     "send|claude|12-18|soru|7-10|benzer": 1,
+     "conversation|claude|soru|11+|uzun|dongu": 3,
+     "card_action|chatgpt|taze_baslat": 2,
+     "conversation|claude|yazma|1-3|kisa|normal": 2,
+     "conversation|claude|ozet|4-6|kisa|normal": 2,
+     "conversation|claude|ozet|1-3|orta|normal": 2,
+     "strip|gemini|kod|gosterildi": 5,
+     "conversation|claude|ceviri|7-10|uzun|normal": 3,
+     "send|chatgpt|12-18|diger|11+|farkli": 3,
+     "conversation|claude|ceviri|1-3|kisa|dongu": 1,
+     "send|chatgpt|18-24|soru|1-3|benzer": 1,
+     "conversation|chatgpt|soru|11+|uzun|dongu": 3,
+     "send|gemini|06-12|kod|7-10|benzer": 2,
+     "send|claude|00-06|kod|1-3|farkli": 1,
+     "send|chatgpt|06-12|diger|11+|farkli": 1
+    }
+   }
+  },
+  "expected": {
+   "days": 7,
+   "conversations": 133,
+   "loops": 55,
+   "similar_sends": 48,
+   "top_slot": null,
+   "fresh_starts": 36,
+   "enough": true,
+   "tasks": [
+    {
+     "task": "kod",
+     "conversations": 31,
+     "loops": 13,
+     "long": 13,
+     "top_slot": "18-24",
+     "platforms": [
+      [
+       "chatgpt",
+       18
+      ],
+      [
+       "gemini",
+       9
+      ],
+      [
+       "claude",
+       4
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "ceviri",
+     "conversations": 27,
+     "loops": 9,
+     "long": 5,
+     "top_slot": "12-18",
+     "platforms": [
+      [
+       "chatgpt",
+       15
+      ],
+      [
+       "gemini",
+       7
+      ],
+      [
+       "claude",
+       5
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "soru",
+     "conversations": 23,
+     "loops": 11,
+     "long": 5,
+     "top_slot": "06-12",
+     "platforms": [
+      [
+       "chatgpt",
+       11
+      ],
+      [
+       "claude",
+       8
+      ],
+      [
+       "gemini",
+       4
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "yazma",
+     "conversations": 22,
+     "loops": 12,
+     "long": 9,
+     "top_slot": "12-18",
+     "platforms": [
+      [
+       "gemini",
+       10
+      ],
+      [
+       "claude",
+       8
+      ],
+      [
+       "chatgpt",
+       4
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "ozet",
+     "conversations": 16,
+     "loops": 7,
+     "long": 5,
+     "top_slot": "12-18",
+     "platforms": [
+      [
+       "claude",
+       8
+      ],
+      [
+       "gemini",
+       5
+      ],
+      [
+       "chatgpt",
+       3
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "diger",
+     "conversations": 14,
+     "loops": 3,
+     "long": 14,
+     "top_slot": "18-24",
+     "platforms": [
+      [
+       "chatgpt",
+       5
+      ],
+      [
+       "claude",
+       5
+      ],
+      [
+       "gemini",
+       4
+      ]
+     ],
+     "enough": true
+    }
+   ]
+  }
+ },
+ {
+  "today": "2026-10-26",
+  "days": {
+   "2026-10-26": {
+    "phase": "oneri",
+    "c": {
+     "strip|gemini|kod|gosterildi": 10,
+     "send|claude|00-06|yazma|1-3|farkli": 2,
+     "send|gemini|12-18|yazma|1-3|farkli": 3,
+     "conversation|claude|ozet|4-6|orta|normal": 3,
+     "conversation|chatgpt|soru|4-6|kisa|normal": 2,
+     "conversation|claude|kod|4-6|kisa|normal": 2,
+     "send|gemini|12-18|kod|7-10|farkli": 3,
+     "send|chatgpt|18-24|kod|1-3|farkli": 1,
+     "conversation|gemini|diger|4-6|kisa|dongu": 3,
+     "send|claude|18-24|kod|4-6|farkli": 2,
+     "send|gemini|12-18|diger|7-10|farkli": 3,
+     "send|chatgpt|12-18|soru|7-10|farkli": 3,
+     "conversation|gemini|yazma|7-10|kisa|dongu": 2,
+     "conversation|claude|soru|11+|uzun|normal": 1,
+     "card_action|chatgpt|taze_baslat": 6,
+     "conversation|gemini|yazma|7-10|orta|dongu": 2,
+     "conversation|chatgpt|ceviri|1-3|uzun|normal": 2,
+     "send|claude|18-24|ozet|1-3|benzer": 3,
+     "send|chatgpt|18-24|ceviri|4-6|farkli": 3,
+     "conversation|claude|yazma|7-10|uzun|normal": 3,
+     "send|chatgpt|12-18|yazma|11+|benzer": 2,
+     "conversation|gemini|diger|11+|orta|normal": 2,
+     "conversation|gemini|soru|11+|uzun|normal": 1
+    }
+   },
+   "2026-10-25": {
+    "phase": "oneri",
+    "c": {
+     "send|gemini|18-24|ceviri|7-10|benzer": 2,
+     "send|claude|18-24|ozet|4-6|farkli": 1,
+     "strip|gemini|kod|gosterildi": 3,
+     "conversation|gemini|soru|11+|orta|normal": 2,
+     "send|gemini|18-24|yazma|11+|farkli": 1,
+     "send|gemini|12-18|diger|1-3|benzer": 1,
+     "send|claude|12-18|ceviri|11+|farkli": 2,
+     "send|claude|12-18|diger|1-3|benzer": 2,
+     "conversation|chatgpt|ozet|4-6|kisa|normal": 2,
+     "send|claude|18-24|diger|4-6|farkli": 3,
+     "conversation|chatgpt|yazma|4-6|kisa|normal": 3,
+     "send|gemini|12-18|diger|11+|benzer": 1,
+     "conversation|claude|soru|1-3|orta|normal": 1,
+     "send|claude|12-18|yazma|7-10|benzer": 3,
+     "conversation|claude|kod|4-6|kisa|normal": 3,
+     "conversation|chatgpt|kod|4-6|uzun|normal": 2,
+     "send|chatgpt|18-24|ceviri|4-6|farkli": 2,
+     "conversation|gemini|diger|1-3|uzun|dongu": 2,
+     "conversation|claude|yazma|1-3|kisa|dongu": 2,
+     "send|chatgpt|12-18|ceviri|4-6|benzer": 1,
+     "conversation|gemini|ozet|11+|uzun|normal": 2,
+     "conversation|gemini|diger|4-6|orta|normal": 2,
+     "card_action|chatgpt|taze_baslat": 4,
+     "conversation|chatgpt|kod|4-6|kisa|normal": 2,
+     "conversation|gemini|yazma|7-10|kisa|normal": 3,
+     "send|chatgpt|18-24|ozet|4-6|farkli": 1,
+     "send|gemini|12-18|ozet|1-3|farkli": 1
+    }
+   },
+   "2026-10-24": {
+    "phase": "oneri",
+    "c": {
+     "conversation|chatgpt|kod|4-6|orta|normal": 1,
+     "send|gemini|06-12|ceviri|7-10|farkli": 1,
+     "send|gemini|12-18|ozet|11+|benzer": 1,
+     "card_action|chatgpt|taze_baslat": 9,
+     "conversation|claude|ozet|11+|uzun|normal": 3,
+     "conversation|claude|soru|4-6|kisa|dongu": 3,
+     "send|claude|18-24|kod|4-6|farkli": 1,
+     "conversation|chatgpt|diger|4-6|kisa|normal": 1,
+     "send|chatgpt|18-24|soru|7-10|benzer": 1,
+     "send|chatgpt|12-18|diger|11+|farkli": 2,
+     "send|gemini|06-12|ozet|4-6|benzer": 2,
+     "send|claude|18-24|kod|11+|benzer": 2,
+     "conversation|claude|kod|4-6|orta|dongu": 2,
+     "strip|gemini|kod|gosterildi": 3,
+     "conversation|claude|kod|11+|kisa|normal": 1,
+     "send|gemini|12-18|soru|7-10|benzer": 3,
+     "send|claude|18-24|diger|7-10|benzer": 1,
+     "conversation|chatgpt|soru|1-3|kisa|normal": 1,
+     "conversation|gemini|ceviri|7-10|uzun|dongu": 2,
+     "send|gemini|06-12|ozet|1-3|farkli": 2,
+     "send|gemini|18-24|soru|1-3|benzer": 2,
+     "send|chatgpt|12-18|kod|7-10|benzer": 3,
+     "conversation|claude|ceviri|7-10|kisa|dongu": 1,
+     "conversation|gemini|kod|4-6|uzun|normal": 1,
+     "conversation|claude|yazma|11+|kisa|normal": 1,
+     "conversation|claude|yazma|4-6|uzun|normal": 3,
+     "conversation|claude|ceviri|4-6|orta|normal": 1,
+     "send|chatgpt|12-18|soru|11+|farkli": 1
+    }
+   }
+  },
+  "expected": {
+   "days": 7,
+   "conversations": 70,
+   "loops": 19,
+   "similar_sends": 30,
+   "top_slot": "12-18",
+   "fresh_starts": 19,
+   "enough": true,
+   "tasks": [
+    {
+     "task": "yazma",
+     "conversations": 19,
+     "loops": 6,
+     "long": 11,
+     "top_slot": "12-18",
+     "platforms": [
+      [
+       "claude",
+       9
+      ],
+      [
+       "gemini",
+       7
+      ],
+      [
+       "chatgpt",
+       3
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "kod",
+     "conversations": 14,
+     "loops": 2,
+     "long": 1,
+     "top_slot": "12-18",
+     "platforms": [
+      [
+       "claude",
+       8
+      ],
+      [
+       "chatgpt",
+       5
+      ],
+      [
+       "gemini",
+       1
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "soru",
+     "conversations": 11,
+     "loops": 3,
+     "long": 4,
+     "top_slot": "12-18",
+     "platforms": [
+      [
+       "claude",
+       5
+      ],
+      [
+       "chatgpt",
+       3
+      ],
+      [
+       "gemini",
+       3
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "diger",
+     "conversations": 10,
+     "loops": 5,
+     "long": 2,
+     "top_slot": "12-18",
+     "platforms": [
+      [
+       "gemini",
+       9
+      ],
+      [
+       "chatgpt",
+       1
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "ozet",
+     "conversations": 10,
+     "loops": 0,
+     "long": 5,
+     "top_slot": "18-24",
+     "platforms": [
+      [
+       "claude",
+       6
+      ],
+      [
+       "chatgpt",
+       2
+      ],
+      [
+       "gemini",
+       2
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "ceviri",
+     "conversations": 6,
+     "loops": 3,
+     "long": 3,
+     "top_slot": "18-24",
+     "platforms": [
+      [
+       "chatgpt",
+       2
+      ],
+      [
+       "claude",
+       2
+      ],
+      [
+       "gemini",
+       2
+      ]
+     ],
+     "enough": true
+    }
+   ]
+  }
+ },
+ {
+  "today": "2027-01-02",
+  "days": {
+   "2027-01-02": {
+    "phase": "oneri",
+    "c": {
+     "conversation|gemini|kod|7-10|orta|dongu": 1,
+     "conversation|gemini|ozet|4-6|kisa|normal": 2,
+     "send|chatgpt|18-24|yazma|7-10|farkli": 1,
+     "send|chatgpt|18-24|kod|7-10|farkli": 1,
+     "send|gemini|18-24|kod|7-10|benzer": 3,
+     "conversation|claude|diger|7-10|uzun|dongu": 1,
+     "conversation|chatgpt|kod|11+|kisa|normal": 2,
+     "conversation|claude|soru|4-6|kisa|normal": 2,
+     "send|gemini|18-24|ozet|4-6|farkli": 1,
+     "send|gemini|12-18|ceviri|1-3|benzer": 1
+    }
+   },
+   "2027-01-01": {
+    "phase": "oneri",
+    "c": {
+     "send|claude|18-24|kod|4-6|farkli": 2,
+     "send|chatgpt|00-06|ceviri|4-6|benzer": 1,
+     "send|gemini|12-18|yazma|11+|benzer": 1,
+     "send|chatgpt|18-24|ceviri|7-10|benzer": 3,
+     "conversation|claude|yazma|7-10|kisa|normal": 1,
+     "send|chatgpt|06-12|yazma|7-10|benzer": 2,
+     "card_action|chatgpt|taze_baslat": 3,
+     "conversation|chatgpt|yazma|1-3|uzun|normal": 3,
+     "send|claude|06-12|yazma|1-3|benzer": 3,
+     "send|claude|18-24|ozet|11+|benzer": 2
+    }
+   },
+   "2026-12-31": {
+    "phase": "oneri",
+    "c": {
+     "card_action|chatgpt|taze_baslat": 5,
+     "send|gemini|12-18|diger|7-10|farkli": 2,
+     "send|claude|18-24|kod|4-6|benzer": 1,
+     "send|chatgpt|18-24|diger|1-3|benzer": 3,
+     "send|claude|18-24|ceviri|1-3|benzer": 2,
+     "send|gemini|12-18|diger|1-3|farkli": 3,
+     "conversation|chatgpt|ceviri|11+|kisa|dongu": 2,
+     "send|chatgpt|12-18|ozet|1-3|benzer": 3
+    }
+   },
+   "2026-12-30": {
+    "phase": "oneri",
+    "c": {
+     "send|chatgpt|12-18|diger|4-6|farkli": 1,
+     "send|chatgpt|18-24|ceviri|7-10|farkli": 3,
+     "send|gemini|18-24|soru|7-10|farkli": 1,
+     "card_action|chatgpt|taze_baslat": 2,
+     "conversation|claude|ozet|1-3|kisa|normal": 1,
+     "conversation|chatgpt|diger|11+|kisa|normal": 2,
+     "conversation|chatgpt|yazma|1-3|kisa|normal": 1,
+     "conversation|gemini|diger|11+|kisa|normal": 2,
+     "send|claude|12-18|yazma|1-3|benzer": 2,
+     "strip|gemini|kod|gosterildi": 2
+    }
+   },
+   "2026-12-29": {
+    "phase": "oneri",
+    "c": {
+     "send|chatgpt|00-06|kod|4-6|farkli": 2,
+     "strip|gemini|kod|gosterildi": 3,
+     "card_action|chatgpt|taze_baslat": 2,
+     "conversation|claude|soru|1-3|orta|normal": 3,
+     "conversation|chatgpt|soru|1-3|kisa|dongu": 2,
+     "send|gemini|18-24|ozet|7-10|benzer": 2,
+     "send|gemini|12-18|yazma|1-3|benzer": 3,
+     "send|gemini|12-18|soru|7-10|farkli": 3,
+     "send|claude|00-06|soru|1-3|benzer": 2,
+     "send|claude|18-24|ceviri|4-6|benzer": 2
+    }
+   },
+   "2026-12-28": {
+    "phase": "oneri",
+    "c": {
+     "strip|gemini|kod|gosterildi": 3,
+     "send|claude|06-12|ozet|11+|farkli": 1,
+     "send|claude|18-24|soru|7-10|benzer": 1,
+     "conversation|chatgpt|diger|11+|orta|normal": 2,
+     "send|gemini|00-06|ceviri|7-10|farkli": 2,
+     "send|claude|18-24|kod|4-6|benzer": 3,
+     "conversation|claude|ozet|11+|orta|normal": 2,
+     "send|chatgpt|12-18|ceviri|7-10|farkli": 3,
+     "conversation|chatgpt|diger|7-10|kisa|normal": 1
+    }
+   },
+   "2026-12-27": {
+    "phase": "oneri",
+    "c": {
+     "conversation|gemini|yazma|4-6|uzun|normal": 3,
+     "send|chatgpt|12-18|ceviri|1-3|benzer": 1,
+     "card_action|chatgpt|taze_baslat": 6,
+     "conversation|chatgpt|kod|4-6|orta|normal": 3,
+     "conversation|chatgpt|ceviri|7-10|orta|normal": 1,
+     "send|gemini|18-24|ceviri|1-3|farkli": 1,
+     "conversation|claude|ozet|11+|uzun|normal": 2,
+     "strip|gemini|kod|gosterildi": 1,
+     "conversation|gemini|soru|7-10|kisa|normal": 3
+    }
+   },
+   "2026-12-26": {
+    "phase": "oneri",
+    "c": {
+     "send|gemini|12-18|ceviri|4-6|benzer": 3,
+     "send|chatgpt|18-24|yazma|7-10|benzer": 3,
+     "strip|gemini|kod|gosterildi": 5,
+     "conversation|claude|soru|7-10|uzun|normal": 1,
+     "send|gemini|18-24|soru|7-10|farkli": 3,
+     "send|gemini|12-18|soru|11+|benzer": 3,
+     "card_action|chatgpt|taze_baslat": 2,
+     "conversation|claude|ceviri|11+|kisa|dongu": 3,
+     "conversation|chatgpt|soru|4-6|uzun|dongu": 2
+    }
+   },
+   "2026-12-25": {
+    "phase": "oneri",
+    "c": {
+     "send|chatgpt|06-12|soru|1-3|farkli": 3,
+     "conversation|gemini|ceviri|7-10|orta|normal": 1,
+     "conversation|chatgpt|kod|1-3|kisa|normal": 2,
+     "send|gemini|18-24|yazma|11+|benzer": 1,
+     "conversation|gemini|diger|11+|kisa|dongu": 2,
+     "conversation|gemini|diger|7-10|orta|normal": 1,
+     "strip|gemini|kod|gosterildi": 2,
+     "send|gemini|06-12|ozet|7-10|benzer": 2,
+     "conversation|chatgpt|ceviri|7-10|uzun|normal": 3
+    }
+   }
+  },
+  "expected": {
+   "days": 7,
+   "conversations": 42,
+   "loops": 6,
+   "similar_sends": 41,
+   "top_slot": "18-24",
+   "fresh_starts": 18,
+   "enough": true,
+   "tasks": [
+    {
+     "task": "soru",
+     "conversations": 10,
+     "loops": 2,
+     "long": 3,
+     "top_slot": "00-06",
+     "platforms": [
+      [
+       "claude",
+       5
+      ],
+      [
+       "gemini",
+       3
+      ],
+      [
+       "chatgpt",
+       2
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "diger",
+     "conversations": 8,
+     "loops": 1,
+     "long": 8,
+     "top_slot": "18-24",
+     "platforms": [
+      [
+       "chatgpt",
+       5
+      ],
+      [
+       "gemini",
+       2
+      ],
+      [
+       "claude",
+       1
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "yazma",
+     "conversations": 8,
+     "loops": 0,
+     "long": 1,
+     "top_slot": "12-18",
+     "platforms": [
+      [
+       "chatgpt",
+       4
+      ],
+      [
+       "gemini",
+       3
+      ],
+      [
+       "claude",
+       1
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "ozet",
+     "conversations": 7,
+     "loops": 0,
+     "long": 4,
+     "top_slot": "18-24",
+     "platforms": [
+      [
+       "claude",
+       5
+      ],
+      [
+       "gemini",
+       2
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "kod",
+     "conversations": 6,
+     "loops": 1,
+     "long": 3,
+     "top_slot": "18-24",
+     "platforms": [
+      [
+       "chatgpt",
+       5
+      ],
+      [
+       "gemini",
+       1
+      ]
+     ],
+     "enough": true
+    },
+    {
+     "task": "ceviri",
+     "conversations": 3,
+     "loops": 2,
+     "long": 3,
+     "top_slot": "18-24",
+     "platforms": [
+      [
+       "chatgpt",
+       3
+      ]
+     ],
+     "enough": true
+    }
+   ]
+  }
+ }
+]

@@ -89,9 +89,10 @@
         "gizlendi_rastgele",
         "gizlendi_bekleme",
         "gizlendi_kapali",
-        "gizlendi_platform"
+        "gizlendi_platform",
+        "gizlendi_kisisel"
       ],
-      "note": "Benzer mesaj şeridi. tetiklendi: koşul sağlandı; ardından gösterildi ya da gizlendi (nedeniyle) sayılır."
+      "note": "Benzer mesaj şeridi. tetiklendi: koşul sağlandı; ardından gösterildi ya da gizlendi (nedeniyle) sayılır. gizlendi_kisisel: sohbet kişisel ya da duygusal görünüyor, öneri gösterilmedi (içeriği değil yalnızca sayısı)."
     },
     "strip_action": {
       "dims": [
@@ -128,14 +129,16 @@
         "tetiklendi_model",
         "gosterildi_norm",
         "gosterildi_model",
+        "gosterildi_elle",
         "gizlendi_sayim",
         "gizlendi_rastgele",
         "gizlendi_bekleme",
         "gizlendi_kapali",
         "gizlendi_platform",
-        "gizlendi_yaziyor"
+        "gizlendi_yaziyor",
+        "gizlendi_kisisel"
       ],
-      "note": "Çıkış kartı. norm: görev normu (K14); model: tur modeli (K17)."
+      "note": "Çıkış kartı. norm: görev normu (K14); model: tur modeli (K17). elle: kullanıcı araç çubuğu penceresindeki 'Bu sohbet' bölümünden açtı."
     },
     "card_action": {
       "dims": [
@@ -193,6 +196,16 @@
         "normal"
       ],
       "note": "Sohbet bittiğinde (başka sohbete geçiş ya da sekme kapanışı) bir kez: tur kovası, ilk mesaj uzunluğu ve sonuç. Sonuç Python'daki etiketin eklentideki karşılığı (counters.loop_outcome)."
+    },
+    "insight": {
+      "dims": [
+        "task"
+      ],
+      "details": [
+        "pencere",
+        "ayrinti"
+      ],
+      "note": "Haftalık içgörü. pencere: araç çubuğu penceresi içgörüyle açıldı (görev 'na'); ayrinti: bir görev satırı açıldı."
     }
   }
 }

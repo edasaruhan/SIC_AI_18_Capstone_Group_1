@@ -14,6 +14,8 @@ import {
 import { ExitCardPolicy } from "../core/exit-card-policy";
 import { buildFreshStartDraft } from "../core/fresh-start";
 import { HistoryWatcher } from "../core/history-watcher";
+import { isPopupMessage, MSG_OPEN_CARD, type ConversationSnapshot } from "../core/messages";
+import { isPersonal } from "../core/personal";
 import { RepeatDetector } from "../core/repeat-detector";
 import { Session } from "../core/session";
 import {
@@ -24,7 +26,7 @@ import {
   SettingsStore,
   type Settings,
 } from "../core/settings";
-import { taskType } from "../core/tasks";
+import { taskNorm, taskType } from "../core/tasks";
 import { turnFeatures } from "../core/turn-features";
 import { MODEL_MIN_TURN, predict, type Prediction } from "../core/turn-model";
 import { copyToClipboard } from "../ui/clipboard";
@@ -55,6 +57,10 @@ function main(): void {
   let sentThisVisit = false;
   /** Bu sohbet "Taze başlat" ile mi açıldı? */
   let freshFollowup = false;
+  /** Sohbet kişisel ya da duygusal görünüyor mu? Öyleyse bu sohbette öneri gösterilmez. */
+  let personal = false;
+  /** Bu sohbette öncekine çok benzeyen mesaj sayısı ("Bu sohbet" bölümü için) */
+  let similarCount = 0;
 
   // Ayarlar yüklenene kadar (null) eklenti hiçbir şey yapmaz.
   let settings: Settings | null = null;
@@ -102,6 +108,10 @@ function main(): void {
     if (policy.inCooldown(session.turns)) return hide("bekleme");
     if (!settings?.exitCardEnabled) return hide("kapali");
     if (!intervening()) return hide("platform");
+    if (personal) {
+      policy.dismissed(session.turns);
+      return hide("kisisel");
+    }
     if (!suggesting()) {
       // Aynı bekleme kuralı işlesin diye kapatılmış gibi say.
       policy.dismissed(session.turns);
@@ -109,11 +119,19 @@ function main(): void {
     }
     const composer = adapter.composer();
     if (!composer || !composer.empty) return hide("yaziyor");
+    showCard(source, reason, composer.anchor);
+  };
 
+  /** "Bu sohbet" bölümünden kart açılabilir mi? */
+  const cardAvailable = () =>
+    suggesting() && intervening() && !personal && userTexts.length > 0 && !strip.visible && !exitCard.visible && adapter.composer() !== null;
+
+  /** Çıkış kartını gösterir: kendiliğinden (norm, model) ya da pencereden istenince (elle). */
+  const showCard = (source: "norm" | "model" | "elle", reason: Prediction["reasons"][number] | null, anchor: Element) => {
     console.log(`[KafiAI] çıkış kartı gösterildi (tur ${session.turns}, ${source}${reason ? `: ${reason.key}` : ""})`);
     record("card", `gosterildi_${source}`);
     exitCard.show(
-      composer.anchor,
+      anchor,
       session.turns,
       policy.norm,
       {
@@ -129,7 +147,7 @@ function main(): void {
           console.log(`[KafiAI] taze başlat: ${copied ? "panoya kopyalandı, yeni sohbet açıldı" : "kopyalanamadı"}`);
           return copied;
         },
-        onNever: () => {
+        onNever: source === "elle" ? undefined : () => {
           console.log("[KafiAI] kullanıcı 'Bir daha gösterme' dedi");
           record("card_action", "bir_daha_gosterme");
           void store.update({ exitCardEnabled: false });
@@ -186,7 +204,10 @@ function main(): void {
       // tekrar denemeleri sırayla karşılaştırarak (kalibrasyondaki simülasyonla aynı kural).
       if (texts[0] !== undefined) policy.setTask(taskType(texts[0]));
       for (const text of texts) {
-        if (detector.check(text).soft) policy.noteRepeat();
+        const check = detector.check(text);
+        if (check.soft) policy.noteRepeat();
+        if (check.similar) similarCount += 1;
+        if (isPersonal(text)) personal = true;
         detector.remember(text);
       }
       userTexts = [...texts];
@@ -221,6 +242,8 @@ function main(): void {
       userTexts = [];
       lastPrediction = null;
       sentThisVisit = false;
+      personal = false;
+      similarCount = 0;
       if (session.key !== null) history.begin(Date.now());
       else void checkFreshStart();
       if (!first) console.log("[KafiAI] eklenti açıldı");
@@ -253,6 +276,10 @@ function main(): void {
       }
       if (!intervening()) {
         record("strip", "gizlendi_platform");
+        return false;
+      }
+      if (personal || isPersonal(text)) {
+        record("strip", "gizlendi_kisisel"); // kişisel ya da duygusal sohbet: araya girme
         return false;
       }
       if (!suggesting()) {
@@ -302,6 +329,12 @@ function main(): void {
       const check = detector.check(text);
       detector.remember(text);
       userTexts.push(text);
+      if (check.similar) similarCount += 1;
+      if (!personal && isPersonal(text)) {
+        personal = true;
+        exitCard.hide();
+        console.log("[KafiAI] sohbet kişisel görünüyor; bu sohbette öneri gösterilmeyecek");
+      }
       // Çıkış kartı için tekrar denemesi: farklı kelimelerle yapılanlar da sayılır (yumuşak eşik).
       // Öneriler açık da kapalı da olsa aynı kural işler; böylece iki mod karşılaştırılabilir.
       if (check.soft) policy.noteRepeat();
@@ -350,6 +383,8 @@ function main(): void {
       policy.reset();
       userTexts = [];
       lastPrediction = null;
+      personal = false;
+      similarCount = 0;
       history.cancel();
       if (active() && session.key !== null) history.begin(Date.now()); // başka bir var olan sohbet açıldı
       else if (active()) void checkFreshStart();
@@ -359,7 +394,39 @@ function main(): void {
     }
   }, NAV_POLL_MS);
 
+  // Araç çubuğu penceresinden gelen istekler. Cevapta mesaj metni yok; yalnızca sayılar.
+  const snapshot = (): ConversationSnapshot => {
+    const task = userTexts[0] !== undefined ? taskType(userTexts[0]) : null;
+    const norm = task !== null ? taskNorm(task) : null;
+    return {
+      platform,
+      active: active(),
+      suggesting: suggesting(),
+      intervening: intervening(),
+      personal,
+      turns: userTexts.length,
+      task,
+      similar: similarCount,
+      norm: norm && task !== "diger" ? { median: norm.median_turns, p75: norm.p75_turns } : null,
+      card_available: cardAvailable(),
+    };
+  };
+  const onPopupMessage = (message: unknown, _sender: unknown, respond: (r: unknown) => void) => {
+    if (!isPopupMessage(message)) return false;
+    if (message.type === MSG_OPEN_CARD) {
+      const composer = adapter.composer();
+      const ok = cardAvailable() && composer !== null;
+      if (ok) showCard("elle", null, composer.anchor);
+      respond({ ok });
+      return false;
+    }
+    respond(snapshot());
+    return false;
+  };
+  chrome.runtime.onMessage.addListener(onPopupMessage);
+
   window.addEventListener("pagehide", () => {
+    chrome.runtime.onMessage.removeListener(onPopupMessage);
     endConversation();
     void counters.flush();
     stop();
