@@ -12,6 +12,7 @@
         --line: #dfe5e1;
         --accent: #1f6f54;
         --danger: #a23a2e;
+        --soft: #eef4f0;
       }
       @media (prefers-color-scheme: dark) {
         :root {
@@ -21,11 +22,12 @@
           --line: #333b36;
           --accent: #55b592;
           --danger: #e08a7c;
+          --soft: #252c28;
         }
       }
       body {
         margin: 0;
-        width: 320px;
+        width: 340px;
         background: var(--bg);
         color: var(--fg);
         font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -55,6 +57,32 @@
       }
       button:hover { border-color: var(--accent); }
       button.danger { color: var(--danger); border-color: var(--danger); }
+      .rows { margin-top: 6px; }
+      details.row { border: 1px solid var(--line); border-radius: 10px; margin: 6px 0; }
+      details.row.plain { border-style: dashed; margin-top: 10px; }
+      details.row[open] { background: var(--soft); }
+      details.row summary {
+        list-style: none;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        padding: 8px 10px;
+        cursor: pointer;
+        border-radius: 10px;
+      }
+      details.row summary::-webkit-details-marker { display: none; }
+      details.row summary::after { content: "▸"; margin-left: auto; color: var(--muted); transition: transform 0.15s; }
+      details.row[open] summary::after { transform: rotate(90deg); }
+      details.row summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .row-title { font-weight: 600; }
+      .row-meta { color: var(--muted); font-size: 12px; white-space: nowrap; }
+      .row-body { padding: 0 10px 8px; }
+      .row-body p { margin: 0 0 6px; }
+      .tip { color: var(--accent); }
+      .conversation p { margin: 0 0 4px; }
+      button.primary { margin-top: 6px; background: var(--accent); border-color: var(--accent); color: var(--bg); }
+      button.primary:hover { filter: brightness(1.08); }
+      @media (prefers-reduced-motion: reduce) { details.row summary::after { transition: none; } }
       .privacy { margin: 0; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
     </style>
   </head>

@@ -2,7 +2,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { CounterStore, dayOf, validateExport, type Dims, type EventName } from "../core/counters";
 import { SettingsStore, type KeyValueStorage } from "../core/settings";
-import { mountPopup } from "./popup";
+import type { ConversationSnapshot } from "../core/messages";
+import { mountPopup, type TabBridge } from "./popup";
 
 function memoryStorage(): KeyValueStorage & { data: Record<string, unknown> } {
   const data: Record<string, unknown> = {};
@@ -35,10 +36,24 @@ function checkbox(label: string): HTMLInputElement {
 function button(text: string): HTMLButtonElement {
   return Array.from(root.querySelectorAll("button")).find((b) => b.textContent === text)!;
 }
-async function open() {
-  mountPopup(root, store, counters, () => NOW);
+async function open(tab?: TabBridge) {
+  mountPopup(root, store, counters, () => NOW, undefined, tab);
+  await flush();
   await flush();
 }
+const snap = (over: Partial<ConversationSnapshot> = {}): ConversationSnapshot => ({
+  platform: "chatgpt", active: true, suggesting: true, intervening: true, personal: false, turns: 7, task: "kod",
+  similar: 2, norm: { median: 3, p75: 5 }, card_available: true, ...over,
+});
+function fakeTab(s: ConversationSnapshot | null, openOk = true) {
+  const calls = { open: 0 };
+  const tab: TabBridge = { snapshot: async () => s, openCard: async () => (calls.open++, openOk) };
+  return { tab, calls };
+}
+async function conversations(task: string, n: number, outcome = "normal", len = "4-6") {
+  for (let i = 0; i < n; i++) await record("conversation", outcome, NOW, { platform: "chatgpt", task, len, first_len: "orta" });
+}
+const rowTitles = () => Array.from(root.querySelectorAll("details.row:not(.plain) .row-title")).map((e) => e.textContent);
 
 beforeEach(() => {
   document.body.innerHTML = '<div id="root"></div>';
@@ -161,6 +176,80 @@ describe("popup", () => {
     await record("strip", "gosterildi");
     await open();
     const text = (root.textContent ?? "").toLowerCase();
-    for (const bad of ["bağımlı", "risk", "tehlike", "seri", "rozet", "%"]) expect(text).not.toContain(bad);
+    for (const bad of ["bağımlı", "risk", "tehlike", "seri", "rozet", "puan", "ödül", "%"]) expect(text).not.toContain(bad);
+  });
+
+  it("haftalık içgörüde görevler açılır kapanır satırlar olarak sıralanır", async () => {
+    await conversations("kod", 4, "dongu", "11+");
+    await conversations("kod", 2);
+    await conversations("ceviri", 3);
+    await open();
+    expect(root.textContent).toContain("Son 7 günde 9 sohbet.");
+    expect(root.textContent).toContain("Bunların 4'ünde cevap ilk seferde oturmadı");
+    expect(rowTitles()).toEqual(["Kod yazma ve hata ayıklama", "Çeviri"]);
+    const kod = root.querySelector("details.row") as HTMLDetailsElement;
+    expect(kod.open).toBe(false);
+    expect(kod.querySelector(".row-meta")?.textContent).toBe("6 sohbet · 4 tekrar");
+    expect(kod.querySelector(".tip")?.textContent).toMatch(/^İstersen/);
+  });
+
+  it("satır açılınca bir kez sayılır; içgörü penceresi de bir kez sayılır", async () => {
+    await conversations("kod", 5);
+    await open();
+    const kod = root.querySelector("details.row") as HTMLDetailsElement;
+    kod.open = true;
+    kod.dispatchEvent(new Event("toggle"));
+    kod.dispatchEvent(new Event("toggle"));
+    await flush();
+    const json = JSON.parse(await counters.exportJson());
+    const c = json.days[dayOf(NOW)].c;
+    expect(c["insight|kod|ayrinti"]).toBe(1);
+    expect(c["insight|na|pencere"]).toBe(1);
+    expect(validateExport(json)).toEqual([]);
+  });
+
+  it("öneriler kapalıyken (yalnızca say) içgörü ve 'Bu sohbet' gösterilmez", async () => {
+    await store.update({ suggestionsEnabled: false });
+    await conversations("kod", 6, "dongu");
+    const { tab } = fakeTab(snap());
+    await open(tab);
+    expect(root.textContent).toContain("Öneriler kapalıyken yalnızca sayıyorum");
+    expect(rowTitles()).toEqual([]);
+    expect(root.textContent).not.toContain("Bu sohbet");
+  });
+
+  it("'Bu sohbet' bölümü sayıları gösterir ve kartı sekmede açar", async () => {
+    const { tab, calls } = fakeTab(snap());
+    const close = window.close;
+    let closed = false;
+    window.close = () => void (closed = true);
+    await open(tab);
+    expect(root.textContent).toContain("Kod yazma ve hata ayıklama · 7 mesaj");
+    button("İstersen yeni sohbete geç").click();
+    await flush();
+    expect(calls.open).toBe(1);
+    expect(closed).toBe(true);
+    window.close = close;
+  });
+
+  it("kişisel sohbette öneri ve düğme yok", async () => {
+    const { tab } = fakeTab(snap({ personal: true, card_available: false }));
+    await open(tab);
+    expect(root.textContent).toContain("Bu sohbette öneri göstermiyorum.");
+    expect(button("İstersen yeni sohbete geç")).toBeUndefined();
+    expect(root.textContent).not.toContain("Kod yazma");
+  });
+
+  it("desteklenmeyen sekmede 'Bu sohbet' bölümü çıkmaz", async () => {
+    await open(fakeTab(null).tab);
+    expect(root.textContent).not.toContain("Bu sohbet");
+  });
+
+  it("kart açılamazsa bunu söyler", async () => {
+    await open(fakeTab(snap(), false).tab);
+    button("İstersen yeni sohbete geç").click();
+    await flush();
+    await flush();
+    expect(root.textContent).toContain("Şu an açılamadı");
   });
 });
