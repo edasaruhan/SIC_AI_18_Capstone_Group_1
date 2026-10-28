@@ -1,0 +1,705 @@
+{
+  "thresholds": {
+    "min_conversations": 300,
+    "min_lift": 1.5,
+    "max_precision_drop": 0.1
+  },
+  "reference": "WildChat 4.8M test",
+  "groups": {
+    "WildChat 4.8M test": {
+      "Tümü": {
+        "n_conversations": 5612,
+        "n_labelled_conversations": 5612,
+        "n_rows": 17069,
+        "mean_user_turns": 7.63,
+        "repeat_pair_rate": 0.103,
+        "personal_rate": 0.0032,
+        "tasks": {
+          "kod": 0.116,
+          "ceviri": 0.0087,
+          "ozet": 0.0036,
+          "yazma": 0.0633,
+          "soru": 0.124,
+          "diger": 0.6844
+        },
+        "card_conv_rate": 0.0538,
+        "base_rate": 0.066,
+        "mean_prob": 0.0787,
+        "pr_auc": 0.2506,
+        "pr_auc_ci": [
+          0.2104,
+          0.299
+        ],
+        "lift": 3.79,
+        "oneri_precision": 0.2381,
+        "oneri_recall": 0.4117,
+        "oneri_n": 1949,
+        "high_precision": 0.3764,
+        "high_recall": 0.2121,
+        "high_n": 635
+      },
+      "GPT-3.5": {
+        "n_conversations": 2733,
+        "n_labelled_conversations": 2733,
+        "n_rows": 8241,
+        "mean_user_turns": 7.04,
+        "repeat_pair_rate": 0.0903,
+        "personal_rate": 0.0015,
+        "tasks": {
+          "kod": 0.0896,
+          "ceviri": 0.007,
+          "ozet": 0.0059,
+          "yazma": 0.0585,
+          "soru": 0.116,
+          "diger": 0.723
+        },
+        "card_conv_rate": 0.03,
+        "base_rate": 0.0409,
+        "mean_prob": 0.0576,
+        "pr_auc": 0.2208,
+        "pr_auc_ci": [
+          0.1493,
+          0.2967
+        ],
+        "lift": 5.4,
+        "oneri_precision": 0.2104,
+        "oneri_recall": 0.3116,
+        "oneri_n": 499,
+        "high_precision": 0.3725,
+        "high_recall": 0.1691,
+        "high_n": 153
+      },
+      "GPT-4": {
+        "n_conversations": 1239,
+        "n_labelled_conversations": 1239,
+        "n_rows": 3723,
+        "mean_user_turns": 7.64,
+        "repeat_pair_rate": 0.1463,
+        "personal_rate": 0.0065,
+        "tasks": {
+          "kod": 0.1324,
+          "ceviri": 0.0089,
+          "ozet": 0.0008,
+          "yazma": 0.0864,
+          "soru": 0.1477,
+          "diger": 0.6239
+        },
+        "card_conv_rate": 0.0759,
+        "base_rate": 0.0666,
+        "mean_prob": 0.0978,
+        "pr_auc": 0.1984,
+        "pr_auc_ci": [
+          0.1441,
+          0.2774
+        ],
+        "lift": 2.98,
+        "oneri_precision": 0.1871,
+        "oneri_recall": 0.4435,
+        "oneri_n": 588,
+        "high_precision": 0.2626,
+        "high_recall": 0.2097,
+        "high_n": 198
+      },
+      "GPT-4.1": {
+        "n_conversations": 542,
+        "n_labelled_conversations": 542,
+        "n_rows": 1760,
+        "mean_user_turns": 9.41,
+        "repeat_pair_rate": 0.0933,
+        "personal_rate": 0.0037,
+        "tasks": {
+          "kod": 0.2066,
+          "ceviri": 0.0037,
+          "ozet": 0.0037,
+          "yazma": 0.0443,
+          "soru": 0.0886,
+          "diger": 0.6531
+        },
+        "card_conv_rate": 0.1255,
+        "base_rate": 0.1585,
+        "mean_prob": 0.1239,
+        "pr_auc": 0.43,
+        "pr_auc_ci": [
+          0.3123,
+          0.5438
+        ],
+        "lift": 2.71,
+        "oneri_precision": 0.3729,
+        "oneri_recall": 0.5627,
+        "oneri_n": 421,
+        "high_precision": 0.5417,
+        "high_recall": 0.3262,
+        "high_n": 168
+      },
+      "GPT-4o": {
+        "n_conversations": 1098,
+        "n_labelled_conversations": 1098,
+        "n_rows": 3345,
+        "mean_user_turns": 8.21,
+        "repeat_pair_rate": 0.0901,
+        "personal_rate": 0.0036,
+        "tasks": {
+          "kod": 0.1184,
+          "ceviri": 0.0155,
+          "ozet": 0.0009,
+          "yazma": 0.0583,
+          "soru": 0.1348,
+          "diger": 0.6721
+        },
+        "card_conv_rate": 0.0528,
+        "base_rate": 0.0786,
+        "mean_prob": 0.0855,
+        "pr_auc": 0.1851,
+        "pr_auc_ci": [
+          0.1255,
+          0.2505
+        ],
+        "lift": 2.35,
+        "oneri_precision": 0.2086,
+        "oneri_recall": 0.3498,
+        "oneri_n": 441,
+        "high_precision": 0.3362,
+        "high_recall": 0.1483,
+        "high_n": 116
+      }
+    },
+    "WildChat 1M": {
+      "GPT-3.5": {
+        "n_conversations": 6190,
+        "n_labelled_conversations": 6190,
+        "n_rows": 18282,
+        "mean_user_turns": 6.97,
+        "repeat_pair_rate": 0.0954,
+        "personal_rate": 0.0027,
+        "tasks": {
+          "kod": 0.0714,
+          "ceviri": 0.01,
+          "ozet": 0.0063,
+          "yazma": 0.0635,
+          "soru": 0.1279,
+          "diger": 0.7208
+        },
+        "card_conv_rate": 0.0309,
+        "base_rate": 0.0382,
+        "mean_prob": 0.0593,
+        "pr_auc": 0.1916,
+        "pr_auc_ci": [
+          0.144,
+          0.2465
+        ],
+        "lift": 5.02,
+        "oneri_precision": 0.2043,
+        "oneri_recall": 0.3238,
+        "oneri_n": 1106,
+        "high_precision": 0.339,
+        "high_recall": 0.1705,
+        "high_n": 351
+      },
+      "GPT-4": {
+        "n_conversations": 1775,
+        "n_labelled_conversations": 1775,
+        "n_rows": 5240,
+        "mean_user_turns": 7.84,
+        "repeat_pair_rate": 0.1037,
+        "personal_rate": 0.0096,
+        "tasks": {
+          "kod": 0.1042,
+          "ceviri": 0.0175,
+          "ozet": 0.0045,
+          "yazma": 0.0772,
+          "soru": 0.1577,
+          "diger": 0.6389
+        },
+        "card_conv_rate": 0.0823,
+        "base_rate": 0.0857,
+        "mean_prob": 0.097,
+        "pr_auc": 0.3202,
+        "pr_auc_ci": [
+          0.2553,
+          0.3837
+        ],
+        "lift": 3.74,
+        "oneri_precision": 0.2848,
+        "oneri_recall": 0.5011,
+        "oneri_n": 790,
+        "high_precision": 0.4051,
+        "high_recall": 0.2851,
+        "high_n": 316
+      }
+    },
+    "WildFeedback": {
+      "Tümü": {
+        "n_conversations": 20000,
+        "n_labelled_conversations": 20000,
+        "n_rows": 58415,
+        "mean_user_turns": 7.14,
+        "repeat_pair_rate": 0.1241,
+        "personal_rate": 0.0058,
+        "tasks": {
+          "kod": 0.1094,
+          "ceviri": 0.0218,
+          "ozet": 0.012,
+          "yazma": 0.1361,
+          "soru": 0.199,
+          "diger": 0.5218
+        },
+        "card_conv_rate": 0.0764,
+        "base_rate": 0.0886,
+        "mean_prob": 0.0908,
+        "pr_auc": 0.243,
+        "pr_auc_ci": [
+          0.2256,
+          0.2603
+        ],
+        "lift": 2.74,
+        "oneri_precision": 0.259,
+        "oneri_recall": 0.4022,
+        "oneri_n": 8040,
+        "high_precision": 0.3643,
+        "high_recall": 0.2048,
+        "high_n": 2910,
+        "dsat": {
+          "base_rate": 0.1392,
+          "pr_auc": 0.228,
+          "lift": 1.64,
+          "high_precision": 0.3227
+        }
+      }
+    },
+    "ShareChat": {
+      "chatgpt": {
+        "n_conversations": 20000,
+        "n_labelled_conversations": 20000,
+        "n_rows": 70060,
+        "mean_user_turns": 11.23,
+        "repeat_pair_rate": 0.0497,
+        "personal_rate": 0.0083,
+        "tasks": {
+          "kod": 0.0436,
+          "ceviri": 0.0045,
+          "ozet": 0.009,
+          "yazma": 0.0363,
+          "soru": 0.2472,
+          "diger": 0.6594
+        },
+        "card_conv_rate": 0.0579,
+        "base_rate": 0.1538,
+        "mean_prob": 0.0715,
+        "pr_auc": 0.3061,
+        "pr_auc_ci": [
+          0.2909,
+          0.3229
+        ],
+        "lift": 1.99,
+        "oneri_precision": 0.3734,
+        "oneri_recall": 0.2295,
+        "oneri_n": 6621,
+        "high_precision": 0.4595,
+        "high_recall": 0.0927,
+        "high_n": 2174
+      },
+      "claude": {
+        "n_conversations": 275,
+        "n_labelled_conversations": 275,
+        "n_rows": 980,
+        "mean_user_turns": 11.53,
+        "repeat_pair_rate": 0.0432,
+        "personal_rate": 0.0327,
+        "tasks": {
+          "kod": 0.1164,
+          "ceviri": 0.0036,
+          "ozet": 0.0145,
+          "yazma": 0.0436,
+          "soru": 0.24,
+          "diger": 0.5818
+        },
+        "card_conv_rate": 0.16,
+        "base_rate": 0.2673,
+        "mean_prob": 0.1124,
+        "pr_auc": 0.4031,
+        "pr_auc_ci": [
+          0.3207,
+          0.4945
+        ],
+        "lift": 1.51,
+        "oneri_precision": 0.4541,
+        "oneri_recall": 0.3206,
+        "oneri_n": 185,
+        "high_precision": 0.44,
+        "high_recall": 0.1679,
+        "high_n": 100
+      },
+      "gemini": {
+        "n_conversations": 1415,
+        "n_labelled_conversations": 1415,
+        "n_rows": 5062,
+        "mean_user_turns": 13.42,
+        "repeat_pair_rate": 0.0483,
+        "personal_rate": 0.0078,
+        "tasks": {
+          "kod": 0.0749,
+          "ceviri": 0.0049,
+          "ozet": 0.0014,
+          "yazma": 0.0184,
+          "soru": 0.2035,
+          "diger": 0.6968
+        },
+        "card_conv_rate": 0.0367,
+        "base_rate": 0.128,
+        "mean_prob": 0.0768,
+        "pr_auc": 0.2543,
+        "pr_auc_ci": [
+          0.1954,
+          0.3015
+        ],
+        "lift": 1.99,
+        "oneri_precision": 0.2657,
+        "oneri_recall": 0.3009,
+        "oneri_n": 734,
+        "high_precision": 0.4725,
+        "high_recall": 0.0664,
+        "high_n": 91
+      },
+      "grok": {
+        "n_conversations": 3089,
+        "n_labelled_conversations": 3089,
+        "n_rows": 10452,
+        "mean_user_turns": 10.44,
+        "repeat_pair_rate": 0.037,
+        "personal_rate": 0.0129,
+        "tasks": {
+          "kod": 0.023,
+          "ceviri": 0.0029,
+          "ozet": 0.0091,
+          "yazma": 0.0217,
+          "soru": 0.293,
+          "diger": 0.6504
+        },
+        "card_conv_rate": 0.0444,
+        "base_rate": 0.1398,
+        "mean_prob": 0.0659,
+        "pr_auc": 0.3402,
+        "pr_auc_ci": [
+          0.3033,
+          0.3856
+        ],
+        "lift": 2.43,
+        "oneri_precision": 0.4307,
+        "oneri_recall": 0.2423,
+        "oneri_n": 822,
+        "high_precision": 0.4216,
+        "high_recall": 0.0773,
+        "high_n": 268
+      },
+      "perplexity": {
+        "n_conversations": 553,
+        "n_labelled_conversations": 553,
+        "n_rows": 1491,
+        "mean_user_turns": 7.28,
+        "repeat_pair_rate": 0.0348,
+        "personal_rate": 0.0036,
+        "tasks": {
+          "kod": 0.0199,
+          "ceviri": 0.0054,
+          "ozet": 0.0108,
+          "yazma": 0.0289,
+          "soru": 0.3526,
+          "diger": 0.5823
+        },
+        "card_conv_rate": 0.0054,
+        "base_rate": 0.0429,
+        "mean_prob": 0.0478,
+        "pr_auc": 0.2062,
+        "pr_auc_ci": [
+          0.054,
+          0.4091
+        ],
+        "lift": 4.8,
+        "oneri_precision": 0.3793,
+        "oneri_recall": 0.1719,
+        "oneri_n": 29,
+        "high_precision": 0.6667,
+        "high_recall": 0.0625,
+        "high_n": 6
+      }
+    },
+    "LMSYS": {
+      "Claude": {
+        "n_conversations": 3901,
+        "n_labelled_conversations": 3901,
+        "n_rows": 11441,
+        "mean_user_turns": 7.37,
+        "repeat_pair_rate": 0.1171,
+        "personal_rate": 0.009,
+        "tasks": {
+          "kod": 0.0743,
+          "ceviri": 0.0033,
+          "ozet": 0.0082,
+          "yazma": 0.0664,
+          "soru": 0.2402,
+          "diger": 0.6075
+        },
+        "card_conv_rate": 0.0379,
+        "base_rate": 0.0708,
+        "mean_prob": 0.0722,
+        "pr_auc": 0.2509,
+        "pr_auc_ci": [
+          0.2053,
+          0.3008
+        ],
+        "lift": 3.54,
+        "oneri_precision": 0.2637,
+        "oneri_recall": 0.3259,
+        "oneri_n": 1001,
+        "high_precision": 0.466,
+        "high_recall": 0.1691,
+        "high_n": 294
+      },
+      "Diğer": {
+        "n_conversations": 20000,
+        "n_labelled_conversations": 20000,
+        "n_rows": 54399,
+        "mean_user_turns": 6.94,
+        "repeat_pair_rate": 0.1019,
+        "personal_rate": 0.0122,
+        "tasks": {
+          "kod": 0.0485,
+          "ceviri": 0.0062,
+          "ozet": 0.0096,
+          "yazma": 0.0757,
+          "soru": 0.309,
+          "diger": 0.551
+        },
+        "card_conv_rate": 0.0237,
+        "base_rate": 0.0728,
+        "mean_prob": 0.0604,
+        "pr_auc": 0.1623,
+        "pr_auc_ci": [
+          0.1461,
+          0.178
+        ],
+        "lift": 2.23,
+        "oneri_precision": 0.2415,
+        "oneri_recall": 0.1742,
+        "oneri_n": 2857,
+        "high_precision": 0.4018,
+        "high_recall": 0.0785,
+        "high_n": 774
+      },
+      "GPT-3.5": {
+        "n_conversations": 536,
+        "n_labelled_conversations": 536,
+        "n_rows": 1434,
+        "mean_user_turns": 6.62,
+        "repeat_pair_rate": 0.077,
+        "personal_rate": 0.0075,
+        "tasks": {
+          "kod": 0.0541,
+          "ceviri": 0.0037,
+          "ozet": 0.0019,
+          "yazma": 0.0933,
+          "soru": 0.3993,
+          "diger": 0.4478
+        },
+        "card_conv_rate": 0.0224,
+        "base_rate": 0.0732,
+        "mean_prob": 0.0641,
+        "pr_auc": 0.1074,
+        "pr_auc_ci": [
+          0.0594,
+          0.1748
+        ],
+        "lift": 1.47,
+        "oneri_precision": 0.125,
+        "oneri_recall": 0.1143,
+        "oneri_n": 96,
+        "high_precision": 0.0667,
+        "high_recall": 0.0095,
+        "high_n": 15
+      },
+      "GPT-4": {
+        "n_conversations": 784,
+        "n_labelled_conversations": 784,
+        "n_rows": 2421,
+        "mean_user_turns": 7.96,
+        "repeat_pair_rate": 0.1261,
+        "personal_rate": 0.0038,
+        "tasks": {
+          "kod": 0.0727,
+          "ceviri": 0.0102,
+          "ozet": 0.0026,
+          "yazma": 0.2066,
+          "soru": 0.2985,
+          "diger": 0.4094
+        },
+        "card_conv_rate": 0.0548,
+        "base_rate": 0.1004,
+        "mean_prob": 0.0776,
+        "pr_auc": 0.2936,
+        "pr_auc_ci": [
+          0.214,
+          0.3893
+        ],
+        "lift": 2.92,
+        "oneri_precision": 0.3646,
+        "oneri_recall": 0.4156,
+        "oneri_n": 277,
+        "high_precision": 0.3924,
+        "high_recall": 0.1276,
+        "high_n": 79
+      },
+      "Gemini": {
+        "n_conversations": 349,
+        "n_labelled_conversations": 349,
+        "n_rows": 988,
+        "mean_user_turns": 7.46,
+        "repeat_pair_rate": 0.0781,
+        "personal_rate": 0.0229,
+        "tasks": {
+          "kod": 0.0487,
+          "ceviri": 0.0086,
+          "ozet": 0.0115,
+          "yazma": 0.1117,
+          "soru": 0.361,
+          "diger": 0.4585
+        },
+        "card_conv_rate": 0.0344,
+        "base_rate": 0.0931,
+        "mean_prob": 0.0725,
+        "pr_auc": 0.2554,
+        "pr_auc_ci": [
+          0.1239,
+          0.3941
+        ],
+        "lift": 2.74,
+        "oneri_precision": 0.3659,
+        "oneri_recall": 0.3261,
+        "oneri_n": 82,
+        "high_precision": 0.4583,
+        "high_recall": 0.1196,
+        "high_n": 24
+      },
+      "Llama": {
+        "n_conversations": 5802,
+        "n_labelled_conversations": 5802,
+        "n_rows": 14799,
+        "mean_user_turns": 6.45,
+        "repeat_pair_rate": 0.1141,
+        "personal_rate": 0.0102,
+        "tasks": {
+          "kod": 0.0605,
+          "ceviri": 0.0084,
+          "ozet": 0.011,
+          "yazma": 0.0636,
+          "soru": 0.3159,
+          "diger": 0.5405
+        },
+        "card_conv_rate": 0.0191,
+        "base_rate": 0.0562,
+        "mean_prob": 0.059,
+        "pr_auc": 0.125,
+        "pr_auc_ci": [
+          0.1042,
+          0.1566
+        ],
+        "lift": 2.23,
+        "oneri_precision": 0.1846,
+        "oneri_recall": 0.1733,
+        "oneri_n": 780,
+        "high_precision": 0.3118,
+        "high_recall": 0.0638,
+        "high_n": 170
+      },
+      "Vicuna": {
+        "n_conversations": 20000,
+        "n_labelled_conversations": 20000,
+        "n_rows": 56991,
+        "mean_user_turns": 7.08,
+        "repeat_pair_rate": 0.0963,
+        "personal_rate": 0.01,
+        "tasks": {
+          "kod": 0.0653,
+          "ceviri": 0.0056,
+          "ozet": 0.0107,
+          "yazma": 0.0775,
+          "soru": 0.2828,
+          "diger": 0.5582
+        },
+        "card_conv_rate": 0.0277,
+        "base_rate": 0.0657,
+        "mean_prob": 0.0628,
+        "pr_auc": 0.153,
+        "pr_auc_ci": [
+          0.1343,
+          0.1691
+        ],
+        "lift": 2.33,
+        "oneri_precision": 0.2065,
+        "oneri_recall": 0.1773,
+        "oneri_n": 3215,
+        "high_precision": 0.3408,
+        "high_recall": 0.0814,
+        "high_n": 895
+      }
+    }
+  },
+  "recommendations": {
+    "chatgpt": {
+      "model": "on",
+      "evidence": "ShareChat / chatgpt",
+      "lift": 1.99,
+      "high_precision": 0.4595,
+      "reference_high_precision": 0.3764,
+      "checks": {
+        "lift": true,
+        "high_precision": true
+      }
+    },
+    "gemini": {
+      "model": "on",
+      "evidence": "ShareChat / gemini",
+      "lift": 1.99,
+      "high_precision": 0.4725,
+      "reference_high_precision": 0.3764,
+      "checks": {
+        "lift": true,
+        "high_precision": true
+      }
+    },
+    "claude": {
+      "model": "on",
+      "evidence": "LMSYS / Claude",
+      "lift": 3.54,
+      "high_precision": 0.466,
+      "reference_high_precision": 0.3764,
+      "checks": {
+        "lift": true,
+        "high_precision": true
+      }
+    },
+    "copilot": {
+      "model": "on",
+      "evidence": "ShareChat / chatgpt",
+      "lift": 1.99,
+      "high_precision": 0.4595,
+      "reference_high_precision": 0.3764,
+      "checks": {
+        "lift": true,
+        "high_precision": true
+      },
+      "note": "Copilot için doğrudan veri yok; altta GPT-4 ailesi çalıştığı için ChatGPT verisi vekil olarak kullanıldı."
+    },
+    "google_ai_mode": {
+      "model": "on",
+      "evidence": "ShareChat / gemini",
+      "lift": 1.99,
+      "high_precision": 0.4725,
+      "reference_high_precision": 0.3764,
+      "checks": {
+        "lift": true,
+        "high_precision": true
+      },
+      "note": "Google AI Modu için doğrudan veri yok; Gemini verisi vekil olarak kullanıldı."
+    }
+  }
+}
