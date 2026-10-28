@@ -9,6 +9,10 @@ Projede üç sohbet kaynağı var. Hepsi aynı sade biçime çevrilmiş halde da
     48m_turkish WildChat 4.8M'in aynı parçalarındaki tüm Türkçe sohbetler
     wildfeedback WildFeedback'teki İngilizce sohbetler ve memnuniyetsizlik (DSAT) işaretleri
                 (scripts/fetch_wildfeedback.py)
+    sharechat   ShareChat: ChatGPT, Gemini, Claude, Perplexity ve Grok'tan paylaşılmış sohbetler
+                (scripts/fetch_sharechat.py; yalnızca değerlendirme, CC BY-NC)
+    lmsys       LMSYS-Chat-1M: Chatbot Arena'daki 25 modelle sohbetler
+                (scripts/fetch_lmsys.py; yalnızca değerlendirme)
 
 Temizleme adımları `clean_conversations` içinde sırayla uygulanır ve her adımdan sonra kaç
 sohbet kaldığı kaydedilir. Bu sayılar raporda temizleme hunisi olarak gösterilir.
@@ -29,6 +33,9 @@ SOURCES = {
     "48m_sample": PROCESSED / "wildchat48_sample.parquet",
     "48m_turkish": PROCESSED / "wildchat48_turkish.parquet",
     "wildfeedback": PROCESSED / "wildfeedback_conversations.parquet",
+    # Yalnızca değerlendirmede (P4); eğitime girmez. Ortak biçime çevrilmiş hâlde (kafiai.external).
+    "sharechat": PROCESSED / "sharechat_conversations.parquet",
+    "lmsys": PROCESSED / "lmsys_conversations.parquet",
 }
 
 
@@ -36,7 +43,8 @@ def load_source(name):
     """Kaynağı okur. Dosya yoksa hangi script'in çalıştırılacağını söyler."""
     path = SOURCES[name]
     if not path.exists():
-        hint = {"1m": "run_eda.py", "wildfeedback": "fetch_wildfeedback.py"}.get(name, "fetch_wildchat48.py")
+        hint = {"1m": "run_eda.py", "wildfeedback": "fetch_wildfeedback.py", "sharechat": "fetch_sharechat.py",
+                "lmsys": "fetch_lmsys.py"}.get(name, "fetch_wildchat48.py")
         raise FileNotFoundError(f"{path.name} bulunamadı. Önce 'python scripts/{hint}' çalıştırın.")
     df = pd.read_pickle(path) if path.suffix == ".pkl" else pd.read_parquet(path)
     if name == "wildfeedback":
