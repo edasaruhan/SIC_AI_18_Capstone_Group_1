@@ -63,3 +63,18 @@ EXT_SOFT_SIMILARITY_THRESHOLD = 0.6
 EXT_EXIT_CARD_MIN_TURNS = 9
 EXT_EXIT_CARD_MIN_REPEATS = 1
 EXT_EXIT_CARD_COOLDOWN_TURNS = 5
+
+# Çok platformlu sınama (P4, scripts/evaluate_platforms.py). Model eğitime girmeyen veri
+# setlerinde (ShareChat, LMSYS, WildChat'in test kullanıcıları) platform ya da model ailesi
+# başına ölçülür; bir platformda modelin açık kalması için üç koşul aranır:
+#   - en az PLATFORM_MIN_CONVERSATIONS etiketlenebilir sohbet (daha azıyla karar verilmez)
+#   - PR-AUC, o gruptaki döngü oranının en az PLATFORM_MIN_LIFT katı (rastgeleden belirgin iyi)
+#   - yüksek güvenli tahminlerin kesinliği, WildChat test kullanıcılarındaki değerden en fazla
+#     PLATFORM_MAX_PRECISION_DROP puan düşük (kart o platformda da aynı ölçüde isabetli)
+# Koşullar sağlanmazsa öneri "model kapalı" olur; şerit (gerçekleşen tekrar) yine çalışır.
+PLATFORM_MIN_CONVERSATIONS = 300
+PLATFORM_MIN_LIFT = 1.5
+PLATFORM_MAX_PRECISION_DROP = 0.10
+PLATFORM_BOOTSTRAP = 200
+# Dış veri setlerinden alınan mesajlar bu uzunlukta kesilir (WildFeedback ile aynı).
+EXTERNAL_KEEP_CHARS = 2000
