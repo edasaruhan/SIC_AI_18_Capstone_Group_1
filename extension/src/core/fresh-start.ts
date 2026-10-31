@@ -11,7 +11,7 @@ function clip(text: string, max: number): string {
 /**
  * "Taze başlat" taslağı: kullanıcının bir sohbette yazdığı istekleri numaralı tek bir metinde
  * toplar. Basit metin birleştirmedir, cihazda yapılır, hiçbir model veya ağ kullanılmaz.
- * Birbirine çok benzeyen istekler (yeniden denemeler) tek maddeye iner: en son hâli kalır.
+ * Birbirine çok benzeyen istekler (yeniden denemeler) tek maddeye iner: en son hali kalır.
  */
 export function buildFreshStartDraft(texts: string[]): string {
   const items: { text: string; vec: Map<number, number> | null }[] = [];
