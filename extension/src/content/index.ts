@@ -27,7 +27,7 @@ import {
   type Settings,
 } from "../core/settings";
 import { taskNorm, taskType } from "../core/tasks";
-import { turnFeatures } from "../core/turn-features";
+import { EXACT_REPEAT_THRESHOLD, turnFeatures } from "../core/turn-features";
 import { MODEL_MIN_TURN, predict, type Prediction } from "../core/turn-model";
 import { copyToClipboard } from "../ui/clipboard";
 import { ExitCard } from "../ui/exit-card";
@@ -289,6 +289,8 @@ function main(): void {
       console.log(`[KafiAI] benzer mesaj, gönderim bekletildi (skor ${check.score.toFixed(2)})`);
       record("strip", "gosterildi");
       exitCard.hide();
+      const task = userTexts[0] !== undefined ? taskType(userTexts[0]) : null;
+      const stripContext = { attempt: similarCount + 1, exact: check.score >= EXACT_REPEAT_THRESHOLD, task };
       strip.show(anchor, {
         onSendAnyway: () => {
           console.log("[KafiAI] kullanıcı 'Yine de gönder' dedi");
@@ -305,13 +307,19 @@ function main(): void {
           record("strip_action", "duzenle");
           adapter.focusComposer();
         },
+        onFreshStart: () => {
+          console.log("[KafiAI] kullanıcı şeritten 'Yeni sohbete geç' dedi");
+          record("strip_action", "yeni_sohbet");
+          const composer = adapter.composer();
+          if (composer) showCard("elle", null, composer.anchor);
+        },
         onRepair: (sentence, id) => {
           const ok = adapter.insertText(sentence);
           skipNextCheck = ok;
           if (ok) record("repair_button", id);
           console.log(`[KafiAI] onarım cümlesi eklendi: ${ok ? "evet" : "HAYIR (eklenemedi)"}`);
         },
-      });
+      }, stripContext);
       return true;
     },
     onSend: ({ text }) => {

@@ -87,3 +87,27 @@ describe("RepeatDetector", () => {
     expect(d.check("Bu e-postayı daha resmi bir dille yeniden yaz").similar).toBe(false);
   });
 });
+
+import repeatFixture from "../../../tests/fixtures/repeat_parity.json";
+import { newContent, rememberForTest } from "./repeat-detector";
+
+describe("şerit kuralı: yeni içerik getiren mesaj tekrar sayılmaz", () => {
+  it("Python ile aynı kararı verir", () => {
+    for (const row of repeatFixture) {
+      const d = new RepeatDetector();
+      d.remember(row.previous);
+      const r = d.check(row.new);
+      expect([row.new, r.similar]).toEqual([row.new, row.repeat]);
+      expect(newContent(normalizeText(row.new), rememberForTest(normalizeText(row.previous)))).toEqual(row.new_content);
+    }
+  });
+
+  it("seri işlerde şerit çıkmaz ama yumuşak tekrar sayılır", () => {
+    const d = new RepeatDetector();
+    d.remember("1. soruyu adım adım çöz");
+    const r = d.check("2. soruyu adım adım çöz");
+    expect(r.similar).toBe(false);
+    expect(r.newContent).toBe(true);
+    expect(r.soft).toBe(true);
+  });
+});
