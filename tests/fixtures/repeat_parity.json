@@ -1,0 +1,107 @@
+[
+ {
+  "new": "python'da liste nasıl sıralanır?",
+  "previous": "python'da sözlük nasıl sıralanır?",
+  "similarity": 0.776206,
+  "new_content": [
+   "liste"
+  ],
+  "repeat": false
+ },
+ {
+  "new": "Bana bir e-posta yaz, toplantıyı erteleyelim",
+  "previous": "Bana bir e-posta yaz, toplantıyı iptal edelim",
+  "similarity": 0.80111,
+  "new_content": [
+   "erteleyelim"
+  ],
+  "repeat": false
+ },
+ {
+  "new": "1. soruyu çöz",
+  "previous": "2. soruyu çöz",
+  "similarity": 0.833333,
+  "new_content": [
+   "1"
+  ],
+  "repeat": false
+ },
+ {
+  "new": "What is the capital of France?",
+  "previous": "What is the capital of Germany?",
+  "similarity": 0.74587,
+  "new_content": [
+   "france"
+  ],
+  "repeat": false
+ },
+ {
+  "new": "hala çalışmıyor ya",
+  "previous": "hala çalışmıyor",
+  "similarity": 0.912871,
+  "new_content": [],
+  "repeat": true
+ },
+ {
+  "new": "Bu e-postayı daha resmi bir dille yeniden yaz lütfen",
+  "previous": "Bu e-postayı daha resmi bir dille yeniden yaz",
+  "similarity": 0.933157,
+  "new_content": [],
+  "repeat": true
+ },
+ {
+  "new": "Bu kodu düzeltir misin, çalışmıyor",
+  "previous": "Bu kodu düzelt, çalışmıyor",
+  "similarity": 0.81325,
+  "new_content": [],
+  "repeat": true
+ },
+ {
+  "new": "bu fonksiyonu açıkla lütfen tekrar",
+  "previous": "bu fonksiyonu açıkla",
+  "similarity": 0.766965,
+  "new_content": [],
+  "repeat": false
+ },
+ {
+  "new": "Translate this paragraph into English please",
+  "previous": "Translate this paragraph into English",
+  "similarity": 0.920775,
+  "new_content": [],
+  "repeat": true
+ },
+ {
+  "new": "Bu metni özetle 3 madde",
+  "previous": "Bu metni özetle 5 madde",
+  "similarity": 0.869565,
+  "new_content": [
+   "3"
+  ],
+  "repeat": false
+ },
+ {
+  "new": "İSTANBUL'DA HAFTA SONU NE YAPILIR",
+  "previous": "istanbul'da hafta sonu ne yapılır",
+  "similarity": 1.0,
+  "new_content": [],
+  "repeat": true
+ },
+ {
+  "new": "Is it working now? Fix the import error",
+  "previous": "Fix the import error",
+  "similarity": 0.742462,
+  "new_content": [
+   "working"
+  ],
+  "repeat": false
+ },
+ {
+  "new": "Describe the personalities of all the ninth graders",
+  "previous": "Describe the personalities of all the eighth graders",
+  "similarity": 0.913414,
+  "new_content": [
+   "ninth"
+  ],
+  "repeat": false
+ }
+]

@@ -54,3 +54,12 @@ def test_config_matches_extension():
     }
     for name, python_value in pairs.items():
         assert ts_value(name) == python_value, f"{name}: config.ts ile config.py farklı"
+
+
+def test_repeat_rule_matches_fixture():
+    """Şerit kuralı (benzerlik + yeni içerik yok): Python ile eklenti aynı karar."""
+    from kafiai.extension_similarity import is_repeat, new_content
+    rows = json.loads((ROOT / "tests" / "fixtures" / "repeat_parity.json").read_text(encoding="utf-8"))
+    for r in rows:
+        assert new_content(r["new"], r["previous"]) == r["new_content"], r["new"]
+        assert is_repeat(r["new"], r["previous"]) == r["repeat"], r["new"]
