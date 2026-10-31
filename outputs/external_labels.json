@@ -1,0 +1,162 @@
+{
+  "emowoz": {
+    "dialogues": 11433,
+    "message_strong_repair": {
+      "n": 83616,
+      "positives": 5221,
+      "base_rate": 0.0624,
+      "flagged": 6781,
+      "precision": 0.0827,
+      "recall": 0.1075,
+      "f1": 0.0935,
+      "lift": 1.325
+    },
+    "message_any_repair_v1": {
+      "n": 83616,
+      "positives": 5221,
+      "base_rate": 0.0624,
+      "flagged": 195,
+      "precision": 0.4718,
+      "recall": 0.0176,
+      "f1": 0.034,
+      "lift": 7.5559
+    },
+    "dialogue_loop_vs_two_negative": {
+      "n": 11433,
+      "positives": 917,
+      "base_rate": 0.0802,
+      "flagged": 1030,
+      "precision": 0.1786,
+      "recall": 0.2007,
+      "f1": 0.189,
+      "lift": 2.2273
+    },
+    "note": "Görev odaklı diyaloglar (otel, restoran, ulaşım); alan farklı, tamamlayıcı kanıt."
+  },
+  "chatbench": {
+    "conversations": 5870,
+    "wrong_rate_all": {
+      "n": 5870,
+      "rate": 0.2451,
+      "ci": [
+        0.2342,
+        0.2562
+      ]
+    },
+    "by_signal": {
+      "single_message": {
+        "n": 4105,
+        "rate": 0.2256,
+        "ci": [
+          0.2136,
+          0.239
+        ]
+      },
+      "multi_message": {
+        "n": 1765,
+        "rate": 0.2907,
+        "ci": [
+          0.2691,
+          0.3122
+        ]
+      },
+      "any_similar_pair": {
+        "n": 340,
+        "rate": 0.3529,
+        "ci": [
+          0.3,
+          0.4029
+        ]
+      },
+      "no_similar_pair": {
+        "n": 1425,
+        "rate": 0.2758,
+        "ci": [
+          0.2533,
+          0.2983
+        ]
+      },
+      "any_strong_repair": {
+        "n": 306,
+        "rate": 0.2614,
+        "ci": [
+          0.2124,
+          0.3105
+        ]
+      },
+      "no_strong_repair": {
+        "n": 1459,
+        "rate": 0.2968,
+        "ci": [
+          0.2728,
+          0.3194
+        ]
+      },
+      "loop_outcome_dongu": {
+        "n": 41,
+        "rate": 0.3171,
+        "ci": [
+          0.1707,
+          0.4634
+        ]
+      }
+    },
+    "by_turns": {
+      "1": {
+        "n": 4105,
+        "rate": 0.2256,
+        "ci": [
+          0.2119,
+          0.2385
+        ]
+      },
+      "2": {
+        "n": 1069,
+        "rate": 0.2638,
+        "ci": [
+          0.2367,
+          0.2891
+        ]
+      },
+      "3-4": {
+        "n": 512,
+        "rate": 0.3164,
+        "ci": [
+          0.2754,
+          0.3535
+        ]
+      },
+      "5+": {
+        "n": 184,
+        "rate": 0.375,
+        "ci": [
+          0.3043,
+          0.4457
+        ]
+      }
+    },
+    "by_model": {
+      "gpt-4o": {
+        "n": 3082,
+        "rate": 0.2151,
+        "ci": [
+          0.2018,
+          0.2291
+        ]
+      },
+      "llama-3.1-8b": {
+        "n": 2788,
+        "rate": 0.2783,
+        "ci": [
+          0.2618,
+          0.2941
+        ]
+      }
+    },
+    "turn_model_auc_for_wrong": {
+      "n": 1765,
+      "auc": 0.4833
+    },
+    "note": "Kullanıcılar çoktan seçmeli sorular çözüyor; görev bizim kullanım alanımızdan dar. İlişki nedensel değil: zor sorular hem uzun sohbete hem yanlış cevaba yol açabilir."
+  }
+}
