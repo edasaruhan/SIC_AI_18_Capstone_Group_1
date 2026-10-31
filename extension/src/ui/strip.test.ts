@@ -108,3 +108,54 @@ describe("Strip: Yerinde değildi", () => {
     expect(strip.visible).toBe(false);
   });
 });
+
+import { FRESH_START_FROM_ATTEMPT, stripMessage } from "./strip";
+
+describe("şerit metni duruma göre değişir", () => {
+  const strip = new Strip();
+  afterEach(() => strip.hide());
+
+  it("birebir tekrar, yeniden ifade, ikinci deneme ve sonrası farklı metin alır", () => {
+    const texts = new Set([
+      stripMessage({ attempt: 1, exact: true, task: null }).title,
+      stripMessage({ attempt: 1, exact: false, task: null }).title,
+      stripMessage({ attempt: 2, exact: true, task: null }).title,
+      stripMessage({ attempt: 3, exact: true, task: null }).title,
+    ]);
+    expect(texts.size).toBe(4);
+  });
+
+  it("görev türüne göre ipucu ekler; uzun denemede ipucu yerine yeni sohbet önerir", () => {
+    expect(stripMessage({ attempt: 1, exact: true, task: "kod" }).hint).toContain("Hata mesajını");
+    expect(stripMessage({ attempt: 1, exact: true, task: "diger" }).hint).toBeNull();
+    expect(stripMessage({ attempt: 4, exact: false, task: "kod" }).hint).toBeNull();
+  });
+
+  it(`${FRESH_START_FROM_ATTEMPT}. denemede 'Yeni sohbete geç' ana düğme olur`, () => {
+    const a = { ...actions(), onFreshStart: vi.fn() };
+    strip.show(document.body, a, { attempt: FRESH_START_FROM_ATTEMPT, exact: false, task: "kod" });
+    expect(shadowOf().textContent).toContain("Dümen sende");
+    expect(shadowOf().textContent).toContain(`${FRESH_START_FROM_ATTEMPT}. deneme`);
+    buttonByText("Yeni sohbete geç").click();
+    expect(a.onFreshStart).toHaveBeenCalledOnce();
+    expect(strip.visible).toBe(false);
+  });
+
+  it("onFreshStart verilmezse yeni sohbet düğmesi çıkmaz", () => {
+    strip.show(document.body, actions(), { attempt: 5, exact: true, task: null });
+    expect(buttonByText("Yeni sohbete geç")).toBeUndefined();
+    expect(buttonByText("Neyin eksik olduğunu söyle")).toBeTruthy();
+  });
+
+  it("hiçbir durumda yargılayıcı söz yok", () => {
+    for (const attempt of [1, 2, 3, 6]) {
+      for (const exact of [true, false]) {
+        for (const task of ["kod", "ceviri", "ozet", "yazma", "soru", "diger", null]) {
+          const m = stripMessage({ attempt, exact, task });
+          const text = `${m.title} ${m.body} ${m.hint ?? ""}`.toLowerCase();
+          for (const bad of ["bağımlı", "risk", "irade", "tehlike", "başarısız", "%"]) expect(text).not.toContain(bad);
+        }
+      }
+    }
+  });
+});

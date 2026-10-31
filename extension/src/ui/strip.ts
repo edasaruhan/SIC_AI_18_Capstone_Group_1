@@ -1,11 +1,13 @@
 import { REPAIRS, type Repair } from "../core/repairs";
+import { header, mountCard } from "./theme";
 
 /**
  * Gönderirken şerit: benzer bir mesaj gönderilmek üzereyken mesaj kutusunun üstünde görünen
- * küçük, kapatılabilir kutu. Sayfanın stilinden etkilenmemesi için Shadow DOM içinde çizilir.
- * Dil: yargılamaz; "bağımlı", "risk" gibi sözler kullanılmaz.
+ * küçük, kapatılabilir kart. Dil yargılamaz; "bağımlı", "risk" gibi sözler kullanılmaz.
+ * Metin duruma göre değişir: birebir tekrar mı yoksa yeniden ifade mi, bu sohbette kaçıncı kez,
+ * görev türü ne. Üçüncü denemeden sonra yeni sohbete geçme seçeneği de sunulur.
  *
- * İki görünüm: (1) "Yine de gönder" / "Neyin eksik olduğunu söyle", (2) onarım seçenekleri.
+ * İki görünüm: (1) ana seçimler, (2) onarım seçenekleri ("Cevapta ne eksikti?").
  */
 
 export interface StripActions {
@@ -16,31 +18,64 @@ export interface StripActions {
   onRepair(sentence: string, id: Repair["id"]): void;
   /** "Yerinde değildi": uyarı gereksizdi. Verilirse düğme gösterilir. */
   onNotRelevant?(): void;
+  /** "Yeni sohbete geç": çıkış kartını açar. Verilirse ve birkaç deneme olduysa düğme gösterilir. */
+  onFreshStart?(): void;
 }
 
-export const CSS = `
-:host { all: initial; }
-.strip {
-  position: fixed; z-index: 2147483000; box-sizing: border-box;
-  font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
-  background: #fff; color: #1f2328; border: 1px solid #d0d7de; border-radius: 14px;
-  box-shadow: 0 6px 24px rgba(0,0,0,.14); padding: 12px 14px;
+export interface StripContext {
+  /** Bu sohbette kaçıncı benzer mesaj (bu dahil, 1'den başlar). */
+  attempt: number;
+  /** Önceki mesajla neredeyse birebir aynı mı (benzerlik 0,97 ve üstü)? */
+  exact: boolean;
+  /** Görev türü (src/core/tasks.ts); bilinmiyorsa null. */
+  task: string | null;
 }
-@media (prefers-color-scheme: dark) {
-  .strip { background: #2b2b2e; color: #ececf1; border-color: #4a4a50; box-shadow: 0 6px 24px rgba(0,0,0,.5); }
-  button.secondary, button.link { color: #ececf1; border-color: #5a5a60; }
+
+/** Bu denemeden sonra şeritte "Yeni sohbete geç" önerilir. */
+export const FRESH_START_FROM_ATTEMPT = 3;
+
+const TASK_HINTS: Record<string, string> = {
+  kod: "Hata mesajını ve beklediğin çıktıyı eklemek genelde işe yarar.",
+  ceviri: "Metnin kime gideceğini ve ne kadar resmi olacağını söylemek işe yarar.",
+  ozet: "Özetin uzunluğunu ve kimin okuyacağını söylemek işe yarar.",
+  yazma: "Tonu, uzunluğu ve kime yazıldığını belirtmek işe yarar.",
+  soru: "Neyi zaten bildiğini ve cevabı ne için kullanacağını eklemek işe yarar.",
+};
+
+/** Şeridin başlığı, açıklaması ve görev ipucu. Testler ve popup önizlemesi de kullanır. */
+export function stripMessage(ctx: StripContext): { title: string; body: string; hint: string | null } {
+  const hint = ctx.task !== null ? (TASK_HINTS[ctx.task] ?? null) : null;
+  if (ctx.attempt >= FRESH_START_FROM_ATTEMPT) {
+    return {
+      title: "Birkaç denemedir aynı yerdesin.",
+      body:
+        "Uzayan sohbetlerde model kendi eski cevaplarına takılabiliyor; sorun çoğu zaman sende değil, sohbette. " +
+        "Dümen sende: istersen kısa bir mola ver ya da isteğini toplayıp yeni bir sohbete geç.",
+      hint: null,
+    };
+  }
+  if (ctx.attempt === 2) {
+    return {
+      title: "Aynı isteğe ikinci kez dönüyorsun.",
+      body: "Bu noktada aynı soruyu yinelemek yerine önceki cevapta tam olarak neyin yanlış olduğunu söylemek genelde daha hızlı sonuç verir.",
+      hint,
+    };
+  }
+  if (ctx.exact) {
+    return {
+      title: "Bunu az önce de sormuştun.",
+      body: "Aynı soru çoğu zaman aynı cevabı getirir. İstersen neyin eksik kaldığını bir cümleyle ekle.",
+      hint,
+    };
+  }
+  return {
+    title: "Bu, az önceki isteğinin başka bir hali gibi.",
+    body: "Model neyin işe yaramadığını bilirse farklı bir yol dener. İstersen bunu da söyleyerek gönder.",
+    hint,
+  };
 }
-p { margin: 0 0 10px; }
-.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-button {
-  font: inherit; cursor: pointer; border-radius: 999px; padding: 6px 14px;
-  border: 1px solid transparent; background: #0f6e56; color: #fff;
-}
-button.secondary { background: transparent; color: #1f2328; border-color: #b6bcc4; }
-button.link { background: transparent; color: #57606a; padding: 6px 8px; margin-left: auto; }
-button.link + button.link { margin-left: 0; }
-button:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
-`;
+
+const DEFAULT_CONTEXT: StripContext = { attempt: 1, exact: true, task: null };
 
 export class Strip {
   private host: HTMLElement | null = null;
@@ -50,20 +85,9 @@ export class Strip {
     return this.host !== null;
   }
 
-  show(anchor: Element, actions: StripActions): void {
+  show(anchor: Element, actions: StripActions, ctx: StripContext = DEFAULT_CONTEXT): void {
     this.hide();
-    const host = document.createElement("div");
-    host.setAttribute("data-kafiai", "strip");
-    const root = host.attachShadow({ mode: "open" });
-
-    const style = document.createElement("style");
-    style.textContent = CSS;
-
-    const box = document.createElement("div");
-    box.className = "strip";
-    box.setAttribute("role", "dialog");
-    box.setAttribute("aria-label", "KafiAI");
-    root.append(style, box);
+    const { host, box } = mountCard("strip", anchor);
 
     const button = (text: string, cls: string, onClick: () => void): HTMLButtonElement => {
       const b = document.createElement("button");
@@ -73,26 +97,42 @@ export class Strip {
       b.addEventListener("click", onClick);
       return b;
     };
-    const paragraph = (text: string): HTMLParagraphElement => {
+    const paragraph = (text: string, cls?: string): HTMLParagraphElement => {
       const p = document.createElement("p");
+      if (cls) p.className = cls;
       p.textContent = text;
       return p;
+    };
+    const spacer = () => {
+      const s = document.createElement("span");
+      s.className = "spacer";
+      return s;
     };
     const close = () => {
       this.hide();
       actions.onClose();
     };
+    const msg = stripMessage(ctx);
+    const chip = ctx.attempt >= 2 ? `${ctx.attempt}. deneme` : "Benzer mesaj";
 
     const showChoice = () => {
       const row = document.createElement("div");
       row.className = "row";
-      const missing = button("Neyin eksik olduğunu söyle", "", showRepairs);
+      const offerFresh = ctx.attempt >= FRESH_START_FROM_ATTEMPT && actions.onFreshStart;
+      const primary = offerFresh
+        ? button("Yeni sohbete geç", "", () => {
+            this.hide();
+            actions.onFreshStart?.();
+          })
+        : button("Neyin eksik olduğunu söyle", "", showRepairs);
+      row.append(primary);
+      if (offerFresh) row.append(button("Neyin eksik olduğunu söyle", "secondary", showRepairs));
       row.append(
-        missing,
         button("Yine de gönder", "secondary", () => {
           this.hide();
           actions.onSendAnyway();
         }),
+        spacer(),
       );
       if (actions.onNotRelevant) {
         row.append(
@@ -103,8 +143,14 @@ export class Strip {
         );
       }
       row.append(button("Kapat", "link", close));
-      box.replaceChildren(paragraph("Bunu az önce de sormuştun."), row);
-      missing.focus();
+      box.replaceChildren(
+        header(chip),
+        paragraph(msg.title, "title"),
+        paragraph(msg.body, "body"),
+        ...(msg.hint ? [paragraph(msg.hint, "hint")] : []),
+        row,
+      );
+      primary.focus();
     };
 
     const showRepairs = () => {
@@ -118,19 +164,12 @@ export class Strip {
           }),
         );
       }
-      row.append(button("Geri", "link", showChoice));
-      box.replaceChildren(paragraph("Cevapta ne eksikti?"), row);
+      row.append(spacer(), button("Geri", "link", showChoice));
+      box.replaceChildren(header(chip), paragraph("Cevapta ne eksikti?", "title"), paragraph("Seçtiğin cümle mesajına eklenir; tamamlayıp kendin gönderirsin.", "hint"), row);
       (row.firstElementChild as HTMLButtonElement | null)?.focus();
     };
 
     showChoice();
-
-    const rect = anchor.getBoundingClientRect();
-    box.style.left = `${Math.max(8, rect.left)}px`;
-    box.style.width = `${Math.max(rect.width, 280)}px`;
-    box.style.bottom = `${Math.max(8, window.innerHeight - rect.top + 8)}px`;
-
-    document.body.appendChild(host);
     this.host = host;
 
     this.onKey = (e: KeyboardEvent) => {
