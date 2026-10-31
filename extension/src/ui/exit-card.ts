@@ -1,6 +1,6 @@
 import type { TaskNorm } from "../core/tasks";
 import type { Reason } from "../core/turn-model";
-import { CSS as BASE_CSS } from "./strip";
+import { header, mountCard } from "./theme";
 
 /**
  * Çıkış kartı: sohbet uzayıp tekrar denemeleri olduysa, cevap bittikten sonra mesaj kutusunun
@@ -23,14 +23,6 @@ export interface ExitCardActions {
   onNotRelevant?(): void;
 }
 
-const EXTRA_CSS = `
-textarea {
-  width: 100%; box-sizing: border-box; min-height: 130px; margin: 0 0 10px; padding: 8px 10px;
-  font: inherit; color: inherit; background: transparent; border: 1px solid #b6bcc4; border-radius: 10px; resize: vertical;
-}
-.note { color: #57606a; font-size: 13px; margin: 0 0 10px; }
-@media (prefers-color-scheme: dark) { .note { color: #b0b0b8; } textarea { border-color: #5a5a60; } }
-`;
 
 export class ExitCard {
   private host: HTMLElement | null = null;
@@ -46,17 +38,8 @@ export class ExitCard {
    */
   show(anchor: Element, turns: number, norm: TaskNorm | null, actions: ExitCardActions, reason: Reason | null = null): void {
     this.hide();
-    const host = document.createElement("div");
-    host.setAttribute("data-kafiai", "exit-card");
-    const root = host.attachShadow({ mode: "open" });
-
-    const style = document.createElement("style");
-    style.textContent = BASE_CSS + EXTRA_CSS;
-    const box = document.createElement("div");
-    box.className = "strip";
-    box.setAttribute("role", "dialog");
-    box.setAttribute("aria-label", "KafiAI");
-    root.append(style, box);
+    const { host, box } = mountCard("exit-card", anchor);
+    const chip = reason ? "Modelin önerisi" : "Uzun sohbet";
 
     const el = <K extends keyof HTMLElementTagNameMap>(tag: K, text?: string, cls?: string): HTMLElementTagNameMap[K] => {
       const node = document.createElement(tag);
@@ -75,6 +58,7 @@ export class ExitCard {
       r.append(...children);
       return r;
     };
+    const spacer = () => el("span", undefined, "spacer");
     let ended = false; // kalıcı bir seçim yapıldı; Escape ek bir kapatma sayılmaz
     const dismiss = (kind: ExitDismissal) => {
       this.hide();
@@ -91,11 +75,13 @@ export class ExitCard {
             })]
           : [];
       box.replaceChildren(
-        el("p", reason ? modelCardMessage(reason) : exitCardMessage(turns, norm)),
+        header(chip),
+        el("p", reason ? modelCardMessage(reason) : exitCardMessage(turns, norm), "body"),
         ...(reason ? [el("p", MODEL_NOTE, "note")] : []),
         row(
           fresh,
           button("Kısa ara ver", "secondary", showBreak),
+          spacer(),
           ...notRelevant,
           ...(actions.onNever ? [button("Bir daha gösterme", "link", showNever)] : []),
           button("Kapat", "link", () => dismiss("kapat")),
@@ -109,7 +95,8 @@ export class ExitCard {
       actions.onNever?.();
       const close = button("Kapat", "", () => this.hide());
       box.replaceChildren(
-        el("p", "Tamam, çıkış kartı bir daha gösterilmeyecek. Dilersen KafiAI penceresinden yeniden açabilirsin."),
+        header(chip),
+        el("p", "Tamam, çıkış kartı bir daha gösterilmeyecek. İstersen KafiAI penceresinden yeniden açabilirsin.", "body"),
         row(close),
       );
       close.focus();
@@ -117,7 +104,7 @@ export class ExitCard {
 
     const showBreak = () => {
       const close = button("Kapat", "", () => dismiss("ara"));
-      box.replaceChildren(el("p", "Tamam. Sohbet burada duruyor; hazır olduğunda kaldığın yerden devam edebilirsin."), row(close));
+      box.replaceChildren(header(chip), el("p", "Tamam. Sohbet burada duruyor; hazır olduğunda kaldığın yerden devam edebilirsin.", "body"), row(close));
       close.focus();
     };
 
@@ -131,7 +118,8 @@ export class ExitCard {
         void actions.onFreshStart(area.value).then((ok) => {
           if (ok) {
             box.replaceChildren(
-              el("p", "Panoya kopyalandı. Yeni sohbette Ctrl+V (Mac'te ⌘+V) ile yapıştırabilirsin."),
+              header(chip),
+              el("p", "Panoya kopyalandı. Yeni sohbette Ctrl+V (Mac'te ⌘+V) ile yapıştırabilirsin.", "body"),
               row(button("Kapat", "", () => dismiss("taze"))),
             );
           } else {
@@ -140,18 +128,11 @@ export class ExitCard {
           }
         });
       });
-      box.replaceChildren(el("p", "İsteklerini tek taslakta topladım. İstersen düzenle:"), area, note, row(go, button("Geri", "link", showMain)));
+      box.replaceChildren(header(chip), el("p", "İsteklerini tek taslakta topladım. İstersen düzenle:", "title"), area, note, row(go, spacer(), button("Geri", "link", showMain)));
       area.focus();
     };
 
     showMain();
-
-    const rect = anchor.getBoundingClientRect();
-    box.style.left = `${Math.max(8, rect.left)}px`;
-    box.style.width = `${Math.max(rect.width, 280)}px`;
-    box.style.bottom = `${Math.max(8, window.innerHeight - rect.top + 8)}px`;
-
-    document.body.appendChild(host);
     this.host = host;
 
     this.onKey = (e: KeyboardEvent) => {
