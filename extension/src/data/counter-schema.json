@@ -146,9 +146,10 @@
         "gizlendi_kapali",
         "gizlendi_platform",
         "gizlendi_yaziyor",
-        "gizlendi_kisisel"
+        "gizlendi_kisisel",
+        "gizlendi_serit"
       ],
-      "note": "Çıkış kartı. norm: görev normu (K14); model: tur modeli (K17). elle: kullanıcı araç çubuğu penceresindeki 'Bu sohbet' bölümünden açtı."
+      "note": "Çıkış kartı. norm: görev normu (K14); model: tur modeli (K17). elle: kullanıcı araç çubuğu penceresindeki 'Bu sohbet' bölümünden açtı. gizlendi_serit: aynı turda şerit gösterildi, kart en erken sonraki turda gelebilir (bir turda tek müdahale)."
     },
     "card_action": {
       "dims": [

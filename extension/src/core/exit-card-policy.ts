@@ -102,6 +102,22 @@ export class ExitCardPolicy {
     return this.modelSeen ? this.suggestTurn === turns : this.repeats >= EXIT_CARD_MIN_REPEATS_NO_MODEL;
   }
 
+  /** Bu turun mesajı için şerit gösterildi (bir turda tek müdahale). */
+  private stripTurn = -1;
+
+  /** Şerit gösterildi; turns, şeridin ait olduğu mesajın tur numarasıdır (gönderimden sonraki sayı). */
+  noteStrip(turns: number): void {
+    this.stripTurn = turns;
+  }
+
+  /**
+   * Aynı turda şerit çıktıysa kart o turda gösterilmez, en erken sonraki turda gelebilir. Yeniden
+   * oynatmada (20.000 sohbet) kart 100 sohbette 18,9'dan 18,4'e, yakalama %28,7'den %28,5'e iniyor.
+   */
+  stripShownThisTurn(turns: number): boolean {
+    return this.stripTurn === turns;
+  }
+
   /** Kart kısa süre önce kapatıldı ya da yok sayıldı; bekleme süresi dolmadı. */
   inCooldown(turns: number): boolean {
     return turns < this.quietUntilTurn;
@@ -125,5 +141,6 @@ export class ExitCardPolicy {
     this.suggestTurn = -1;
     this.apologyTurn = -1;
     this.modelSeen = false;
+    this.stripTurn = -1;
   }
 }

@@ -42,6 +42,18 @@ describe("RepeatDetector", () => {
     expect(r.soft).toBe(true);
   });
 
+  it("deneme sayısı yalnızca bu mesajın kendi tekrarlarını sayar", () => {
+    const d = new RepeatDetector();
+    d.remember("bu kodu düzelt");
+    d.remember("olmadı"); // kısa mesaj saklanmaz, deneme sayısına girmez
+    const uzun = "python üzerinde liste ters çevirmenin algoritma analizi ile bağlantısını anlat";
+    expect(d.check(uzun).matches).toBe(0);
+    d.remember(uzun);
+    expect(d.check(uzun).matches).toBe(1);
+    d.remember(uzun);
+    expect(d.check(uzun).matches).toBe(2);
+  });
+
   it("birebir olmayan yeniden yazımda gönderimi bekletmez, birebir tekrarda ve onarımda bekletir", () => {
     const d = new RepeatDetector();
     d.remember("Bu e-postayı daha resmi bir dille yeniden yaz");

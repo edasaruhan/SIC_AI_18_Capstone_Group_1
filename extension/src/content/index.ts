@@ -132,6 +132,8 @@ function main(): boolean {
       console.log(`[KafiAI] çıkış kartı gösterilmedi (${why}, tur ${session.turns})`);
     };
     if (policy.inCooldown(session.turns)) return hide("bekleme");
+    // Bu turda şerit zaten araya girdi; kart bekleme süresi başlatmadan bir sonraki tura kalır.
+    if (policy.stripShownThisTurn(session.turns)) return hide("serit");
     if (!settings?.exitCardEnabled) return hide("kapali");
     if (!intervening()) return hide("platform");
     if (personal) {
@@ -440,10 +442,12 @@ function main(): boolean {
           : `[KafiAI] benzer mesaj, gönderim bekletildi (skor ${check.score.toFixed(2)})`,
       );
       record("strip", shortRepair ? "gosterildi_kisa" : "gosterildi");
+      policy.noteStrip(session.turns + 1); // mesaj gönderilince bu tur numarasını alacak
       exitCard.hide();
       const task = currentTask();
       const stripContext = {
-        attempt: signals.recentSimilar + 1,
+        // Kısa onarımda önceki denemeler, tekrarda yalnızca bu mesajın kendi tekrarları sayılır.
+        attempt: shortRepair ? signals.recentSimilar + 1 : check.matches + 1,
         exact: check.score >= EXACT_REPEAT_THRESHOLD,
         task,
         kind: shortRepair ? ("short_repair" as const) : ("repeat" as const),
@@ -539,6 +543,10 @@ function main(): boolean {
       if (signals.apologyStreak >= 2) recordSignal("ozur_dongusu");
       updateRing();
       maybeShowExitCard();
+    },
+    onSendNotSeen: () => {
+      // Sayfa mesajı göndermedi (örneğin yeni açılmış sekmede Enter işlenmedi): sayılmadı.
+      console.log("[KafiAI] gönderme girişimi sayfada görülmedi, mesaj sayılmadı");
     },
     onNoSignal: () => {
       if (!active()) return;

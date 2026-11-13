@@ -25,6 +25,8 @@ export interface RepeatCheck {
    * ifadesi gerekir. Birebir olmayan yeniden yazım yalnızca halka ve kart için sayılır (repeat-rules.json, hold_note).
    */
   hold: boolean;
+  /** Son mesajlardan kaç tanesi bu mesajın tekrarı (eşiği geçen ve yeni içerik getirmeyen); şeritteki "N. deneme" için. */
+  matches: number;
 }
 
 interface Remembered {
@@ -111,12 +113,13 @@ export class RepeatDetector {
   check(text: string): RepeatCheck {
     const normalized = normalizeText(text);
     if (Array.from(normalized).length < MIN_NORMALIZED_CHARS) {
-      return { similar: false, soft: false, score: 0, tooShort: true, newContent: false, variation: false, hold: false };
+      return { similar: false, soft: false, score: 0, tooShort: true, newContent: false, variation: false, hold: false, matches: 0 };
     }
     const vec = ngramVector(normalized);
     let score = 0;
     let similar = false;
     let exact = false;
+    let matches = 0;
     let aboveThreshold = false;
     for (const previous of this.recent) {
       const s = cosine(vec, previous.vec);
@@ -125,6 +128,7 @@ export class RepeatDetector {
         aboveThreshold = true;
         if (newContent(normalized, previous).length === 0) {
           similar = true;
+          matches += 1;
           if (s >= rules.hold_exact_similarity) exact = true;
         }
       }
@@ -132,10 +136,10 @@ export class RepeatDetector {
     const soft = score >= SOFT_SIMILARITY_THRESHOLD;
     if ((similar || soft) && isVariation(text, score)) {
       // Bilerek yapılan seri üretim: döngü sayılmaz.
-      return { similar: false, soft: false, score, tooShort: false, newContent: false, variation: true, hold: false };
+      return { similar: false, soft: false, score, tooShort: false, newContent: false, variation: true, hold: false, matches: 0 };
     }
     const hold = similar && (exact || hasStrongRepair(text));
-    return { similar, soft, score, tooShort: false, newContent: aboveThreshold && !similar, variation: false, hold };
+    return { similar, soft, score, tooShort: false, newContent: aboveThreshold && !similar, variation: false, hold, matches };
   }
 
   /** Mesaj gönderildikten sonra çağrılır. Kısa mesajlar saklanmaz. */
