@@ -1,6 +1,6 @@
 import { POLL_MS } from "../config";
 import { ResponseWatcher } from "../core/response-watcher";
-import { appendAsNewLine } from "./insert";
+import { appendInline } from "./insert";
 import { reportedUserTurns } from "./virtual-list";
 import type { Adapter, AdapterHandlers } from "./types";
 import { lastOf, responseText } from "./response-text";
@@ -149,7 +149,8 @@ export const claudeAdapter: Adapter = {
     const composer = heldComposer ?? findComposer();
     heldComposer = null;
     if (!composer) return false;
-    return appendAsNewLine(composer, text);
+    // Claude da ProseMirror kullanıyor; yeni paragraf komutu mesajı gönderebilir, aynı satıra eklenir.
+    return appendInline(composer, text);
   },
 
   start(handlers: AdapterHandlers) {

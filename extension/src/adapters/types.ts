@@ -33,6 +33,11 @@ export interface AdapterHandlers {
   onBeforeSend?(info: BeforeSendInfo): boolean;
   /** Kullanıcı bir mesaj gönderdi. */
   onSend(info: SendInfo): void;
+  /**
+   * Gönderme girişimi yakalandı ama sayfa mesajı göndermedi (kutu boşalmadı, yeni mesaj ya da
+   * üretim görülmedi). Mesaj sayılmaz. Yalnızca gönderimi doğrulayan adaptörler çağırır.
+   */
+  onSendNotSeen?(): void;
   /** Yapay zekanın cevabı bitti. */
   onResponseComplete(): void;
   /** Mesaj gönderildi ama "üretiliyor" sinyali hiç görülmedi (sayfa yapısı değişmiş olabilir). */

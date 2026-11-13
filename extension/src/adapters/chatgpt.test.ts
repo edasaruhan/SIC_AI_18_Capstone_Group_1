@@ -33,6 +33,12 @@ function renderPage(
     </form>`;
 }
 
+/** Sayfanın mesajı gerçekten göndermesini taklit eder: kutu boşalır, doğrulama bir tik sonra görür. */
+function pageSent() {
+  document.querySelector<HTMLElement>("form#real [contenteditable]")!.innerHTML = "<p></p>";
+  vi.advanceTimersByTime(150);
+}
+
 function pressEnter(opts: KeyboardEventInit = {}) {
   const box = document.querySelector<HTMLElement>("form#real [contenteditable]")!;
   box.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true, ...opts }));
@@ -104,6 +110,7 @@ describe("sayfada iki mesaj kutusu varken (canlı sayfadaki durum)", () => {
     renderPage({ text: "merhaba", decoy: true });
     stop = chatgptAdapter.start(handlers);
     pressEnter();
+    pageSent();
     expect(handlers.onSend).toHaveBeenCalledWith({ text: "merhaba" });
   });
 
@@ -111,6 +118,7 @@ describe("sayfada iki mesaj kutusu varken (canlı sayfadaki durum)", () => {
     renderPage({ text: "merhaba", decoy: true });
     stop = chatgptAdapter.start(handlers);
     document.querySelector<HTMLButtonElement>('form#real button[type="submit"]')!.click();
+    pageSent();
     expect(handlers.onSend).toHaveBeenCalledWith({ text: "merhaba" });
   });
 
@@ -190,6 +198,7 @@ describe("start(): gönderme ve cevap bitişi", () => {
     renderPage({ text: "merhaba" });
     stop = chatgptAdapter.start(handlers);
     pressEnter();
+    pageSent();
     expect(handlers.onSend).toHaveBeenCalledWith({ text: "merhaba" });
   });
 
@@ -225,7 +234,38 @@ describe("start(): gönderme ve cevap bitişi", () => {
     renderPage({ text: "merhaba" });
     stop = chatgptAdapter.start(handlers);
     document.querySelector<HTMLButtonElement>('button[type="submit"]')!.click();
+    pageSent();
     expect(handlers.onSend).toHaveBeenCalledWith({ text: "merhaba" });
+  });
+
+  it("sayfa mesajı göndermezse (kutu dolu kalır) mesaj sayılmaz, onSendNotSeen çağrılır", () => {
+    const notSeen = vi.fn();
+    renderPage({ text: "merhaba" });
+    stop = chatgptAdapter.start({ ...handlers, onSendNotSeen: notSeen });
+    pressEnter(); // ChatGPT bu Enter'ı işlemedi: kutu dolu kaldı
+    vi.advanceTimersByTime(4100);
+    expect(handlers.onSend).not.toHaveBeenCalled();
+    expect(notSeen).toHaveBeenCalledTimes(1);
+  });
+
+  it("gitmeyen girişimden sonra yeniden Enter tek mesaj sayılır", () => {
+    renderPage({ text: "merhaba" });
+    stop = chatgptAdapter.start(handlers);
+    pressEnter(); // işlenmedi
+    vi.advanceTimersByTime(500);
+    pressEnter(); // ikinci deneme gitti
+    pageSent();
+    expect(handlers.onSend).toHaveBeenCalledTimes(1);
+    expect(handlers.onSend).toHaveBeenCalledWith({ text: "merhaba" });
+  });
+
+  it("kutu boşalmasa da üretim başlarsa gönderilmiş sayılır", () => {
+    renderPage({ text: "merhaba" });
+    stop = chatgptAdapter.start(handlers);
+    pressEnter();
+    document.querySelector("main")!.insertAdjacentHTML("beforeend", `<div data-talvt-turn-state="in_progress"></div>`);
+    vi.advanceTimersByTime(150);
+    expect(handlers.onSend).toHaveBeenCalledTimes(1);
   });
 
   it("form dışındaki bir tıklamayı yok sayar", () => {
@@ -299,6 +339,7 @@ describe("gönderimi bekletme (onBeforeSend)", () => {
     stop = chatgptAdapter.start(handlers);
     pressEnter();
     expect(handlers.onBeforeSend).toHaveBeenCalledTimes(1);
+    pageSent();
     expect(handlers.onSend).toHaveBeenCalledWith({ text: "merhaba" });
   });
 
@@ -347,6 +388,7 @@ describe("gönderimi bekletme (onBeforeSend)", () => {
     expect(chatgptAdapter.submitHeld()).toBe(true);
     expect(handlers.onBeforeSend).toHaveBeenCalledTimes(1); // geçiş izni: tekrar sorulmadı
     expect(pageClick).toHaveBeenCalledTimes(1);
+    pageSent();
     expect(handlers.onSend).toHaveBeenCalledWith({ text: "merhaba" });
     expect(chatgptAdapter.submitHeld()).toBe(false); // artık bekleyen yok
   });
@@ -377,30 +419,17 @@ describe("insertText (onarım cümlesi ekleme)", () => {
     delete (document as unknown as { execCommand?: unknown }).execCommand;
   });
 
-  it("dolu kutuda önce yeni paragraf dener; işe yararsa satır sonuna geçmez", () => {
-    renderPage({ text: "merhaba" });
-    exec.mockImplementation((cmd: string) => {
-      if (cmd === "insertParagraph") {
-        // jsdom innerText vermez; satır sonunu textContent'e koyarak düzenleyiciyi taklit ediyoruz
-        document.querySelector("form#real [contenteditable]")!.textContent = "merhaba\n";
-      }
-      return true;
-    });
-    expect(chatgptAdapter.insertText("Daha kısa yaz.")).toBe(true);
-    expect(exec.mock.calls.map((c) => c[0])).toEqual(["insertParagraph", "insertText"]);
-    expect(exec).toHaveBeenLastCalledWith("insertText", false, "Daha kısa yaz.");
+  it("dolu kutuda aynı satıra boşlukla ekler; yeni paragraf denemez (Enter sayılıp mesajı göndermesin)", () => {
+    renderPage({ text: "olmadı" });
+    expect(chatgptAdapter.insertText("Aldığım hata mesajı: ")).toBe(true);
+    expect(exec.mock.calls.map((c) => c[0])).toEqual(["insertText"]);
+    expect(exec).toHaveBeenLastCalledWith("insertText", false, " Aldığım hata mesajı: ");
   });
 
-  it("yeni paragraf işe yaramazsa satır sonunu dener", () => {
-    renderPage({ text: "merhaba" });
-    expect(chatgptAdapter.insertText("Daha kısa yaz.")).toBe(true);
-    expect(exec.mock.calls.map((c) => c[0])).toEqual(["insertParagraph", "insertLineBreak", "insertText"]);
-  });
-
-  it("boş kutuda satır sonu eklemez", () => {
+  it("boş kutuda boşluk eklemeden yazar", () => {
     renderPage();
     chatgptAdapter.insertText("Daha kısa yaz.");
-    expect(exec.mock.calls.map((c) => c[0])).toEqual(["insertText"]);
+    expect(exec).toHaveBeenLastCalledWith("insertText", false, "Daha kısa yaz.");
   });
 
   it("komut başarısız olursa false döner", () => {

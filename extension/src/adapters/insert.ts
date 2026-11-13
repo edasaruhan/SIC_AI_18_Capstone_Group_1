@@ -28,6 +28,26 @@ export function appendAsNewLine(composer: HTMLElement, text: string): boolean {
 }
 
 /**
+ * Metni kutunun sonuna aynı satırda, bir boşlukla ekler. ProseMirror kullanan sitelerde (ChatGPT,
+ * Claude) "yeni paragraf" komutu Enter gibi yorumlanıp mesajı göndertebiliyor (elle doğrulamada
+ * ChatGPT'de görüldü); bu yüzden orada satır sonu hiç denenmez.
+ */
+export function appendInline(composer: HTMLElement, text: string): boolean {
+  if (typeof document.execCommand !== "function") return false;
+  composer.focus();
+  const selection = window.getSelection();
+  if (!selection) return false;
+  const range = document.createRange();
+  range.selectNodeContents(composer);
+  range.collapse(false); // imleci sona koy
+  selection.removeAllRanges();
+  selection.addRange(range);
+  const current = rawText(composer);
+  const addition = current.trim() !== "" && !/\s$/.test(current) ? ` ${text}` : text;
+  return document.execCommand("insertText", false, addition);
+}
+
+/**
  * Metni bir <textarea> kutusunun sonuna, kutu doluysa yeni satırda ekler. Sayfa değişikliği görsün
  * diye tarayıcının yazma komutunu kullanır (input olayı tetiklenir); olmazsa değeri doğrudan yazıp
  * input olayını kendisi gönderir.
