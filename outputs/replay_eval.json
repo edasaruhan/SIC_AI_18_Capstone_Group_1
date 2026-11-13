@@ -60,23 +60,23 @@
       "cikis_mesaji": 336
     },
     "kart": {
-      "100_sohbette": 18.89,
-      "isabet_yuzde": 31.29,
+      "100_sohbette": 18.43,
+      "isabet_yuzde": 30.39,
       "kaynaga_gore": {
         "model": {
-          "sayi": 3186,
-          "isabet_yuzde": 28.84
+          "sayi": 3137,
+          "isabet_yuzde": 28.12
         },
         "ozur": {
-          "sayi": 538,
-          "isabet_yuzde": 46.65
+          "sayi": 506,
+          "isabet_yuzde": 45.65
         },
         "norm": {
-          "sayi": 53,
-          "isabet_yuzde": 22.64
+          "sayi": 43,
+          "isabet_yuzde": 16.28
         }
       },
-      "tekrarlayan_memnuniyetsizlikte_yakalama_yuzde": 28.67,
+      "tekrarlayan_memnuniyetsizlikte_yakalama_yuzde": 28.52,
       "tekrarlayan_memnuniyetsizlik_sohbeti": 1294
     },
     "taze_baslat": {

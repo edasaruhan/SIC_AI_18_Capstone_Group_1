@@ -10,7 +10,8 @@ memnuniyetsiz olduğu turlarla (DSAT) karşılaştırılır.
     sonra  varyasyon isteği, son mesajlara bakan halka, döngüden çıkış, özür döngüsü,
            belirsiz istek ve konu kayması (K31, K32); uzun sohbet kartı için iki döngü işareti
            birlikte: yakın zamanda benzer mesaj ve modelin öneri seviyesi; gönderimi bekleten şerit
-           yalnızca birebir tekrarda ya da onarım ifadesinde
+           yalnızca birebir tekrarda ya da onarım ifadesinde; şerit çıkan turda kart beklemez
+           bir sonraki tura kalır
 
 Ölçütler (her biri hem "once" hem "sonra" için):
     şerit       100 sohbette kaç kez; isabet = şerit çıkan mesajda kullanıcı memnuniyetsiz mi
@@ -133,7 +134,9 @@ def replay(msgs, answers, model, reasons, policy, predictions=None):
         else:
             level = ring_level(prediction, similar_total, 0, 0)
         card = None
-        if n >= quiet_until:
+        # Bir turda tek müdahale: bu mesajda şerit çıktıysa kart en erken sonraki turda gelir.
+        stripped = after and (hold or signals.last_short_repair)
+        if n >= quiet_until and not stripped:
             if high:
                 card = "model"
             elif after and signals.apology_streak >= config.EXT_APOLOGY_CARD_STREAK:
